@@ -30,13 +30,6 @@ module Top_Student (
 
     //------------------------------------------------
     
-    wire [15:0] draw_oled;
-    
-    always@(*)
-    begin
-        oled_colour = draw_oled;
-    end
-
             
     //Insantiate Imported Modules -----------------------
     Oled_Display myoled(

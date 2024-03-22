@@ -1,6 +1,10 @@
 # Graphics Documentation
 Current sprite used is Guile.
 
+## (23/3/24) Implemented
+- Sprite moving animation and coordinate translation
+- Background image
+
 ## Documentation
 
 ### sprite_control
@@ -27,23 +31,23 @@ module backgroud_control(
     output [15:0] oled_colour
 );
 ```
-`input clk`: 100MHz Clock, might be using it
+`input clk`: 100MHz Clock, might be using it to change the background as the fight progresses.
 
 ## Example Usage
-Copy and paste into `Top_Student.v` to show the background and the sprite on the background. 
+Copy and paste into `Top_Student.v` to show the background and the sprite moving on the background at coordinate (20,20).
 ```verilog
 wire [15:0] sprite_col;
 sprite_control sp_ctr(.clk(clk),
-                        .x(20),.y(20),
-                        .in_air(0),
-                        .is_moving(1),
-                        .pixel_index(pixel_index),
-                        .oled_colour(sprite_col));
+                      .x(20),.y(20),
+                      .in_air(0),
+                      .is_moving(1),
+                      .pixel_index(pixel_index),
+                      .oled_colour(sprite_col));
 
 wire [15:0] background_color;
 backgroud_control bck_ctr(.clk(clk),
-                            .pixel_index(pixel_index),
-                            .oled_colour(background_color));
+                          .pixel_index(pixel_index),
+                          .oled_colour(background_color));
 
 always@(pixel_index)
 begin

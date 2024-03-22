@@ -18,7 +18,7 @@ module Top_Student (
 );
 
     //OLED Driver -----------------------------------
-    reg [15:0] oled_colour = 16'hFFFF;
+    reg [15:0] oled_colour;
     wire frame_begin;
     wire [12:0] pixel_index;
     wire sending_pixels, sample_pixel;
@@ -29,8 +29,8 @@ module Top_Student (
                          .CLOCK_OUT(CLK_6MHz25));
 
     //------------------------------------------------
+    
 
-            
     //Insantiate Imported Modules -----------------------
     Oled_Display myoled(
         .clk(CLK_6MHz25), 

@@ -24,11 +24,12 @@ module GameStateController (
     input clk,
     input reset,
     input user_input,
+    input game_over,
     // Additional inputs for other events/triggers
     input character_selection_done,
 
 
-    output reg [3:0] game_state,
+    output reg [3:0] game_state
     // Additional outputs for control signals
 );
 
@@ -62,16 +63,17 @@ always @(posedge clk or posedge reset) begin
                 end
             END_STATE:
                 // Handle any end state conditions or transitions
+                begin
+                end
                 
-            default: // Add a default case to handle unexpected game states
-                game_state <= MAIN_MENU;
+            default: game_state <= MAIN_MENU;
         endcase
     end
 end
 
 // Additional logic for generating control signals based on game state
 // Example:
-assign main_menu_to_character_selection = (game_state == MAIN_MENU && user_input);
+
 // Define other control signals as needed
 
 endmodule

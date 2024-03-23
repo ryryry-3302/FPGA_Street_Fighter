@@ -30,26 +30,7 @@ module Top_Student (
 
     //------------------------------------------------
     
-    wire [15:0] status_bar_col;
-    status_bar_update sbu(.clk(clk),
-                          .curr_health_l(31),
-                          .curr_health_r(0),
-                          .pixel_index(pixel_index),
-                          .oled_colour(status_bar_col));
-  
-    wire [15:0] background_color;
-    backgroud_control bck_ctr(.clk(clk),
-                              .pixel_index(pixel_index),
-                              .oled_colour(background_color));
-    
-    always@(pixel_index)
-    begin
-        if(status_bar_col != 16'h0000)
-            oled_colour = status_bar_col;
-        else
-            oled_colour = background_color;
-    end
-    
+   
             
     //Insantiate Imported Modules -----------------------
     Oled_Display myoled(

@@ -1,27 +1,59 @@
 # Graphics Documentation
 Current sprite used is Guile.
 
-## (23/3/24) Implemented
-- Sprite moving animation and coordinate translation
+- [Example Usage](#example-usage)
+
+## Current Features Implemented
+- Sprite moving, still and basic attack animation
+- Coordinate translation and mirroring of the sprite
 - Background image
+- Option to generate 2 sprite with different colours
+- Attacking animation
 
 ## Documentation
+
+### CustomClock (From previous task)
+Create a clock that runs at frequency Fd. COUNT_STOP or CS can be calculated by 
+$CS=\frac{100*10^6}{2*Fd} - 1$
+
+```verilog
+module CustomClock(
+    input CLOCK_IN,
+    input [31:0] COUNT_STOP,
+    output reg CLOCK_OUT = 0);
+```
 
 ### sprite_control
 ```verilog
 module sprite_control (
     input clk,
+    input modify_col,input mirror,
     input [6:0] x, //2^7 = 128 > 96 (x_max)
     input [6:0] y, //2^7 = 128 > 63 (y_max)
     input in_air, is_moving,
-
+    input [1:0] character_state,
     input [12:0] pixel_index,
     output reg [15:0] oled_colour
 );
 ```
 `input clk`: 100MHz Clock
 
+` input modify_col` : Write 1 to change the sprite colour to redish. This was done by bit shifting the green component.
+
+`input mirror` : Write 1 to mirror the sprite
+
 `input [6:0] x, input [6:0] y`: coordindate of the sprite, where 0,0 is the top left hand of the screen
+
+
+| `input [1:0] character_state`  | Description             |
+|--------------------------------|-------------------------|
+| 2'b00                          | Not attacking  **DONE** |
+| 2'b01                          | Normal attack  **DONE** |
+| 2'b10                          | Special attack          |
+| 2'b11                          | Super special attack    |
+
+`input [12:0] pixel_index` and `output reg [15:0] oled_colour` are typical oled input and outputs.
+
 
 ### background_control
 ```verilog
@@ -34,29 +66,43 @@ module backgroud_control(
 `input clk`: 100MHz Clock, might be using it to change the background as the fight progresses.
 
 ## Example Usage
-Copy and paste into `Top_Student.v` to show the background and the sprite moving on the background at coordinate (20,20).
+Copy and paste into `Top_Student.v` to show the background and 2 sprites. Press BtnC for the left sprite to show its normal attack and press BtnR for the right sprite to show its normal attack. The right sprite is reddish in colour.
 ```verilog
-wire [15:0] sprite_col;
-sprite_control sp_ctr(.clk(clk),
-                      .x(20),.y(20),
-                      .in_air(0),
-                      .is_moving(1),
-                      .pixel_index(pixel_index),
-                      .oled_colour(sprite_col));
+integer ground_height = 48;
+
+wire [15:0] sprite_1_col;
+sprite_control sp1_ctr(.clk(clk),
+                        .modify_col(0), .mirror(0),
+                        .x(20), .y(ground_height),
+                        .in_air(0), .is_moving(1),
+                        .character_state({0,btnC} ),
+                        .pixel_index(pixel_index),
+                        .oled_colour(sprite_1_col));
+                        
+wire [15:0] sprite_2_col;
+sprite_control sp2_ctr(.clk(clk),
+                        .modify_col(1), .mirror(1),
+                        .x(70), .y(ground_height),
+                        .in_air(0), .is_moving(1),
+                        .character_state({0,btnR}),
+                        .pixel_index(pixel_index),
+                        .oled_colour(sprite_2_col));                          
 
 wire [15:0] background_color;
 backgroud_control bck_ctr(.clk(clk),
-                          .pixel_index(pixel_index),
-                          .oled_colour(background_color));
+                            .pixel_index(pixel_index),
+                            .oled_colour(background_color));
 
 always@(pixel_index)
-begin
-    if((sprite_col == 16'h0000) || (sprite_col == 16'hFFFF) )
-        //If the sprite is white or black, just use the background colours
-        oled_colour = background_color;
+begin        
+    if(sprite_2_col != 16'h0000)
+        oled_colour = sprite_2_col;
+    else if(sprite_1_col != 16'h0000)
+        oled_colour = sprite_1_col;
     else
-        oled_colour = sprite_col;
-end
+        oled_colour = background_color;
+        
+end   
 ```
 
 ## References

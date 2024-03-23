@@ -13,51 +13,38 @@ module sprite_control (
     
     output reg [15:0] oled_colour
 );
-    wire punch_clk;
-    CustomClock clk4hz(.CLOCK_IN(clk),
-                        .COUNT_STOP(32'd12_500_000 - 1),
-                        .CLOCK_OUT(punch_clk));
 
-    wire walk_clk;
-    CustomClock clk2hz(.CLOCK_IN(clk),
-                        .COUNT_STOP(32'd25_000_000 - 1),
-                        .CLOCK_OUT(walk_clk));
-
-    //Note that middle x = 48, middle y = 32
+    // Translation and Mirroring based on mirror and x,y ----------------------------
     reg [12:0] translated_pixel_index;
-    reg [7:0] X_coord;
-    always@(pixel_index)
-    begin
-        translated_pixel_index = pixel_index;
-        
+    always@(pixel_index) //Note that middle x = 48, middle y = 32
+    begin        
         if(mirror)
-        begin
-            X_coord = pixel_index%96;
-            translated_pixel_index = pixel_index - 2*(X_coord - 48);
+            begin
+            translated_pixel_index = pixel_index - 2*(pixel_index%96 - 48);
             translated_pixel_index = translated_pixel_index + (x-48);
             translated_pixel_index = translated_pixel_index - (y-32)*96; 
-        end
+            end
         
         else
-        begin
-            translated_pixel_index = translated_pixel_index - (x-48);
+            begin
+            translated_pixel_index = pixel_index - (x-48);
             translated_pixel_index = translated_pixel_index - (y-32)*96;
-        end
+            end
     end
+    //------------------------------------------------------------------------------
 
 
-    // Moving/Normal State
+    // Moving/Normal State-----------------------------------------------
     reg [1:0] sprite_norm = 2'b00;
     wire [15:0] Gui_1_col; Gui_State1 gs1(translated_pixel_index,Gui_1_col);
     wire [15:0] Gui_2_col; Gui_State2 gs2(translated_pixel_index,Gui_2_col);
     wire [15:0] Gui_3_col; Gui_State3 gs3(translated_pixel_index,Gui_3_col);
-     
-    //Attack State
-    reg [1:0] sprite_punch = 2'b00;
-    wire [15:0] Gui_p1_col; Gui_Punch1 gp1(translated_pixel_index,Gui_p1_col);
-    wire [15:0] Gui_p2_col; Gui_Punch2 gp2(translated_pixel_index,Gui_p2_col);   
-    wire [15:0] Gui_p3_col; Gui_Punch3 gp3(translated_pixel_index,Gui_p3_col);              
-         
+
+    wire walk_clk;
+    CustomClock clk2hz(.CLOCK_IN(clk),
+                       .COUNT_STOP(32'd25_000_000 - 1),
+                       .CLOCK_OUT(walk_clk));    
+
     always@(posedge walk_clk)
     begin
         if(is_moving)
@@ -65,11 +52,25 @@ module sprite_control (
         else
             sprite_norm = 2'b00;
     end
+    //------------------------------------------------------------------------------   
+
+
+    // Normal Attack State -------------------------------------------------------- 
+    reg [1:0] sprite_punch = 2'b00;
+    wire [15:0] Gui_p1_col; Gui_Punch1 gp1(translated_pixel_index,Gui_p1_col);
+    wire [15:0] Gui_p2_col; Gui_Punch2 gp2(translated_pixel_index,Gui_p2_col);   
+    wire [15:0] Gui_p3_col; Gui_Punch3 gp3(translated_pixel_index,Gui_p3_col);              
+
+    wire punch_clk;
+    CustomClock clk4hz(.CLOCK_IN(clk),
+                        .COUNT_STOP(32'd12_500_000 - 1),
+                        .CLOCK_OUT(punch_clk));         
 
     always@(posedge punch_clk)
     begin
         sprite_punch = (sprite_punch >= 2'b10) ? 2'b00 : sprite_punch + 1;
     end
+    //------------------------------------------------------------------------------     
 
     
     

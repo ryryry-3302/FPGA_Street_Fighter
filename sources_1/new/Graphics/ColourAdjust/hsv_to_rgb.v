@@ -5,50 +5,54 @@ module hsv_to_rgb(
     
     output [15:0] rgb 
 );
-
-    reg [7:0] new_hue;
-
-    reg [7:0] chroma;
-    reg [7:0] hue_sector;
+    
+    reg [7:0] new_h;
+    reg [7:0] region;
     reg [7:0] remainder;
 
-    reg [7:0] delta;
-    reg [7:0] m;
-    
-    //255
+    reg [7:0] P;
+    reg [7:0] Q;
+    reg [7:0] T;
+
     reg [7:0] r;
     reg [7:0] g;
     reg [7:0] b;
 
-    always @(*)
+    always@(*)
     begin
-        new_hue = h*255/360;  
+        if(s == 0)
+            begin
+                r = v;
+                b = v;
+                g = v;
+            end
+        else
+            begin
+            new_h = h * 255/360;
 
-        chroma = v*s /255;
-        hue_sector = new_hue/43;
-        remainder = new_hue%43 * 6;     
+            region = new_h/43;
+            remainder = (new_h - (region * 43)) * 6;
 
-        delta = v-chroma;
-        m = v - ((remainder * chroma) / 255);        
+            P = (v * (255 - s)) >> 8;
+            Q = (v * (255 - ((s * remainder) >> 8))) >> 8;
+            T = (v * (255 - ((s * (255 - remainder)) >> 8))) >> 8;
 
-        case(hue_sector)
-        0: begin r = v;         g = m + delta; b = delta; end
-        1: begin r = m;         g = v;         b = delta; end
-        2: begin r = delta;     g = v;         b = m + delta; end
-        3: begin r = delta;     g = m;         b = v; end
-        4: begin r = m + delta; g = delta;     b = v; end
-        // hue_sector == 5 
-        default: begin r = v; g = delta; b = m; end
-        endcase
+            case(region)
+            0: begin r = v; g = T; b = P; end
+            1: begin r = Q; g = v; b = P; end
+            2: begin r = P; g = v; b = T; end
+            3: begin r = P; g = Q; b = v; end
+            4: begin r = T; g = P; b = v; end
+            5: begin r = v; g = P; b = Q; end
+            endcase
+             
+            end
     end
 
-    wire [4:0] new_r;
-    assign new_r = r * 31 / 255;
-    wire [5:0] new_g;
-    assign new_g = g * 63 / 255;
-    wire [4:0] new_b;
-    assign new_b = b * 31 / 255;
+    wire [4:0] bit_r; assign bit_r = r * 31/255;
+    wire [5:0] bit_g; assign bit_g = g * 63/255;
+    wire [4:0] bit_b; assign bit_b = b * 31/255;
 
-    assign rgb = {new_r,new_g,new_b};        
+    assign rgb = {bit_r,bit_g,bit_b};
 
 endmodule

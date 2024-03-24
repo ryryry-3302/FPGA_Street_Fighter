@@ -1,13 +1,18 @@
 # Graphics Documentation
 Current sprite used is Guile.
 
+- [Current Features](#current-features-implemented) 
 - [Example Usage](#example-usage)
+- [References](#references)
 
-### Modules
-- [CustomClock](#customclock-from-previous-task)
+### Modules Within the Folder
+These modules should be used in `Top_Student.v`
+
 - [status_bar_update](#status_bar_update)
 - [sprite_control](#sprite_control)
 - [background_control](#background_control)
+
+[CustomClock](#customclock-from-previous-task) is a global module for generating clocks, and its documentation here is just as a reminder for usage for modules.
 
 ## Current Features Implemented
 - Sprite moving, still and basic attack animation.
@@ -18,16 +23,6 @@ Current sprite used is Guile.
 
 ## Documentation
 
-### CustomClock (From previous task)
-Create a clock that runs at frequency Fd. COUNT_STOP or CS can be calculated by 
-$CS=\frac{100*10^6}{2*Fd} - 1$
-
-```verilog
-module CustomClock(
-    input CLOCK_IN,
-    input [31:0] COUNT_STOP,
-    output reg CLOCK_OUT = 0);
-```
 ### status_bar_update
 Updates the top KO/Status bar based on the current health of both sprites. Animation to show health dropping towards the current value has been implemented.
 ```verilog
@@ -147,6 +142,17 @@ Copy and paste into `Top_Student.v` to show the background and 2 sprites. Press 
         else
             oled_colour = background_color;
     end
+```
+
+### CustomClock (From previous task)
+Create a clock that runs at frequency Fd. COUNT_STOP or CS can be calculated by 
+$CS=\frac{100*10^6}{2*Fd} - 1$
+
+```verilog
+module CustomClock(
+    input CLOCK_IN,
+    input [31:0] COUNT_STOP,
+    output reg CLOCK_OUT = 0);
 ```
 
 ## References

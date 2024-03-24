@@ -12,12 +12,15 @@ These modules should be used in `Top_Student.v`
 - [sprite_control](#sprite_control)
 - [background_control](#background_control)
 
+### Other Utility/Useful Modules
+- [RGB-HSV](#rgb-to-hsv-conversions)
+
 [CustomClock](#customclock-from-previous-task) is a global module for generating clocks, and its documentation here is just as a reminder for usage for modules.
 
 ## Current Features Implemented
 - Sprite moving, still and basic attack animation.
 - Coordinate translation and mirroring of the sprite.
-- Static Background image.
+- Background image that changes its hue over time.
 - Option to generate 2 sprites with one in original colour and one reddish.
 - Health bar (KO bar) with dropping health animation.
 
@@ -144,6 +147,28 @@ Copy and paste into `Top_Student.v` to show the background and 2 sprites. Press 
     end
 ```
 
+### RGB to HSV conversions
+Code was ported from Cpp to do RGB to HSV conversion and vice versa using integer math. This is currently being used in `background_control.v` to change the colour of the background as the fight progresses.
+
+```verilog
+module hsv_to_rgb(
+    input [7:0] h,
+    input [7:0] s,
+    input [7:0] v,
+    output [15:0] rgb 
+);
+
+module rgb_to_hsv(
+    input [15:0] rgb,
+    output reg [7:0] h,
+    output reg [7:0] s,
+    output reg [7:0] v
+);
+```
+Where hsv values range from 0 to 255, and the rgb value is the 16 bit oled colour value.
+
+
+
 ### CustomClock (From previous task)
 Create a clock that runs at frequency Fd. COUNT_STOP or CS can be calculated by 
 $CS=\frac{100*10^6}{2*Fd} - 1$
@@ -158,3 +183,4 @@ module CustomClock(
 ## References
 - Guile Sprite: https://www.spriters-resource.com/arcade/streetfighter2/sheet/129870/
 - Current Background: https://www.youtube.com/playlist?list=PL8_5sYhn3XymSIUz3oio50XvenNZkCeCd
+- RGB to HSV and HSV to RGB conversion https://github.com/monkbroc/particle-hsv/blob/master/src/hsv.cpp 

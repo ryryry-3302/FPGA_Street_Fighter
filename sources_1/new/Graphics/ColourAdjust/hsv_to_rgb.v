@@ -1,12 +1,11 @@
 module hsv_to_rgb(
-    input [8:0] h,
+    input [7:0] h,
     input [7:0] s,
     input [7:0] v,
     
     output [15:0] rgb 
 );
     
-    reg [7:0] new_h;
     reg [7:0] region;
     reg [7:0] remainder;
 
@@ -28,10 +27,8 @@ module hsv_to_rgb(
             end
         else
             begin
-            new_h = h * 255/360;
-
-            region = new_h/43;
-            remainder = (new_h - (region * 43)) * 6;
+            region = h/43;
+            remainder = (h - (region * 43)) * 6;
 
             P = (v * (255 - s)) >> 8;
             Q = (v * (255 - ((s * remainder) >> 8))) >> 8;

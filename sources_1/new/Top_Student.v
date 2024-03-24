@@ -14,8 +14,16 @@
 module Top_Student (
     input clk,
     input btnC, btnL, btnR, btnU, btnD,
-    output [7:0] JC
+    output [7:0] JC,
+    output [15:0] led
 );
+
+    //Physics Engine ---------------------------------
+    wire[6:0] sprite1_x_out;
+    wire[6:0] sprite1_y_out;
+
+    PhysicsEngine PhysicsEngine1(.velocityUp(led[7:0]),.player_no(1),.clk(clk),.reset(0),.isColliding(0),.movingLeft(btnL),.movingRight(btnR),.isJumping(btnU),.sprite_x_out(sprite1_x_out),.sprite_y_out( sprite1_y_out));
+
 
     //OLED Driver -----------------------------------
     reg [15:0] oled_colour;
@@ -29,7 +37,57 @@ module Top_Student (
                          .CLOCK_OUT(CLK_6MHz25));
 
     //------------------------------------------------
+    //Status Bar -------------------------------------------
+        wire [15:0] status_bar_col;
+        wire [4:0] health_l;
+        wire [4:0] health_r;
+        status_bar_update sbu(.clk(clk),
+                              .curr_health_l(31),
+                              .curr_health_r(0),
+                              .pixel_index(pixel_index),
+                              .oled_colour(status_bar_col),
+                              .final_health_l(health_l),
+                              .final_health_r(health_r));
     
+    //2 Sprites -------------------------------------------
+        integer ground_height = 48;
+        
+        wire [15:0] sprite_1_col;
+        sprite_control sp1_ctr(.clk(clk),
+                                .modify_col(0), .mirror(0),
+                                .x(sprite1_x_out), .y(sprite1_y_out),
+                                .in_air(0), .is_moving(1),
+                                .character_state({0,btnC} ),
+                                .pixel_index(pixel_index),
+                                .oled_colour(sprite_1_col));
+                                
+        wire [15:0] sprite_2_col;
+        sprite_control sp2_ctr(.clk(clk),
+                                .modify_col(1), .mirror(1),
+                                .x(70), .y(ground_height),
+                                .in_air(0), .is_moving(1),
+                                .character_state({0,btnR}),
+                                .pixel_index(pixel_index),
+                                .oled_colour(sprite_2_col));                             
+                              
+    //Background -------------------------------------------  
+        wire [15:0] background_color;
+        backgroud_control bck_ctr(.clk(clk),
+                                  .pixel_index(pixel_index),
+                                  .oled_colour(background_color));
+    
+    // Oled colour mux -------------------------------------------    
+        always@(pixel_index)
+        begin
+            if(status_bar_col != 16'h0000)
+                oled_colour = status_bar_col;
+            else if(sprite_2_col != 16'h0000)
+                oled_colour = sprite_2_col;
+            else if(sprite_1_col != 16'h0000)
+                oled_colour = sprite_1_col;           
+            else
+                oled_colour = background_color;
+        end
    
             
     //Insantiate Imported Modules -----------------------

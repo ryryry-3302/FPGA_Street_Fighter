@@ -21,57 +21,82 @@
 
 
 module PhysicsEngine (
+    output reg [7:0]velocityUp,
     input player_no, // identity of the player
     input clk,
     input reset,
     input isColliding,
     input movingLeft,
     input movingRight,
-    input isJumpin,
-    output reg [7:0] sprite_x_out,
-    output reg [7:0] sprite_y_out
+    input isJumping,
+    output reg [6:0] sprite_x_out = 30,
+    output reg [6:0] sprite_y_out = 48
 );
-
-
-    reg[3:0] velocity_y = 0; // velocity in y direction
-    // Define game state parameters
-    always @(posedge clk or reset) //clock at 20 ticks per second
-begin
-    if (reset) begin
-        case (player_no)
-            0: begin
-                sprite_x_out <= 15; // left end
-                sprite_y_out <= 48; // 48 is the floor
-            end
-            1: begin
-                sprite_x_out <= 75; // right end
-                sprite_y_out <= 48; // 48 is the floor
-            end             
-            default: 
-            begin
-                sprite_x_out <= 0;
-                sprite_y_out <= 0;
-            end
-        endcase
-    end
     
-    else begin
-        if (movingLeft && sprite_x_out > 15 && ~isColliding) begin
-            sprite_x_out <= sprite_x_out - 1;
-        end
-        if (movingRight && sprite_x_out < 75 && ~isColliding) begin
-            sprite_x_out <= sprite_x_out + 1;
-        end
-        if (isJumpin && ~isColliding) begin
-            velocity_y <= 20;
-        end
-        if (sprite_y_out > 48) begin
-            sprite_y_out <= (sprite_y_out - velocity_y) >= 48? sprite_y_out - velocity_y : 48; 
-            velocity_y <= ~isColliding? velocity_y -1: 0; //gravity
-        end
+    reg [6:0] velocity_y_up = 0; // velocity in y direction in 2's
+    reg [6:0] velocity_y_down =0;
 
+    // Define game state parameters
+    wire CLK_20Hz;
+    CustomClock clk20hz(.CLOCK_IN(clk),.COUNT_STOP(2500000),.CLOCK_OUT(CLK_20Hz));
+    
+    always @(posedge CLK_20Hz) //clock at 20 ticks per second
+    begin
+        if (reset) begin
+            case (player_no)
+                0: begin
+                    sprite_x_out <= 15; // left end
+                    sprite_y_out <= 48; // 48 is the floor
+                end
+                1: begin
+                    sprite_x_out <= 75; // right end
+                    sprite_y_out <= 48; // 48 is the floor
+                end             
+                default: 
+                begin
+                    sprite_x_out <= 0;
+                    sprite_y_out <= 0;
+                end
+            endcase
+        end
+        
+        else begin
+            if (movingLeft && sprite_x_out > 15 && ~isColliding) begin
+                sprite_x_out <= sprite_x_out - 2;
+            end
+            if (movingRight && sprite_x_out < 75 && ~isColliding) begin
+                sprite_x_out <= sprite_x_out + 2;
+            end
+            
+            if (isJumping && ~isColliding && sprite_y_out == 48) begin
+                velocity_y_up <= 14;
+                velocity_y_down <= 1;
+                sprite_y_out <= sprite_y_out - velocity_y_up + velocity_y_down;
+            end
+            
+            else if (sprite_y_out >= 49) begin
+            sprite_y_out <= 48;
+            velocity_y_up <= 0;
+            velocity_y_down <= 0;
+            end
+            
+            else if (sprite_y_out <= 14) begin
+                sprite_y_out <= 15;
+                velocity_y_up <= 0;
+                velocity_y_down <= 1;
+            end
+            
+            else begin
+                velocity_y_up <= velocity_y_up >0? velocity_y_up -1 : 0;
+                velocity_y_down <= velocity_y_down <15? velocity_y_up +1 : 0;;
+                sprite_y_out <= sprite_y_out - velocity_y_up + velocity_y_down;
+                
+
+
+            end
+      
+        end
     end
-end
 
 
 

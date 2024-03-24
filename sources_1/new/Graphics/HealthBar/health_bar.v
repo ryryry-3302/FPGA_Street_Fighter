@@ -6,25 +6,31 @@ module health_bar(
     output reg [4:0] prev_health = 31
 );
 
+    //Value
+    parameter FULL_HEALTH = 31;    
+
+    //Coords
+    parameter X_HEALTH_START = 55;
+    parameter Y_HEALTH_BORDER_START = 2;
+    parameter Y_HEALTH_ACT_START = 3;
+
+    //Heights and Lengths
+    parameter FULL_HEALTH_HEIGHT = 8;
+    parameter FULL_HEALTH_LEN = 40;
+    parameter ACT_HEALTH_HEIGHT = 6; 
+
+
     reg [15:0] COLOUR_YELLOW = 16'b11111_111111_00000;
     reg [15:0] COLOUR_RED    = 16'b11111_000000_00000;
     reg [15:0] COLOUR_WHITE    = 16'hFFFF;
     
-    parameter FULL_HEALTH = 31;
 
     always@(posedge health_drop_clk)
     begin
         if( (prev_health > curr_health) && (prev_health > 0) )
             prev_health = prev_health - 1;
+    end
 
-    end    
-
-    integer X_HEALTH_START = 55;
-    integer Y_HEALTH_BORDER_START = 2;
-    integer Y_HEALTH_ACT_START = 3;
-    integer FULL_HEALTH_HEIGHT = 8;
-    integer FULL_HEALTH_LEN = 40;
-    integer ACT_HEALTH_HEIGHT = 6; 
 
     wire draw_health_box;
     Draw_Rect dhb(.pixel_index(pixel_index),

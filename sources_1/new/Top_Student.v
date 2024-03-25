@@ -21,10 +21,14 @@ module Top_Student (
     //Physics Engine ---------------------------------
     wire[6:0] sprite1_x_out;
     wire[6:0] sprite1_y_out;
+     
+   wire player1isColliding;
+   wire player2isColliding;
 
-    PhysicsEngine PhysicsEngine1(.velocityUp(led[7:0]),.player_no(1),.clk(clk),.reset(0),.isColliding(0),.movingLeft(btnL),.movingRight(btnR),.isJumping(btnU),.sprite_x_out(sprite1_x_out),.sprite_y_out( sprite1_y_out));
-
-
+    PhysicsEngine PhysicsEngine1(.velocityUp(led[7:0]),.player_no(1),.clk(clk),.reset(0),.isColliding(player1isColliding),.movingLeft(btnL),.movingRight(btnR),.isJumping(btnU),.sprite_x_out(sprite1_x_out),.sprite_y_out( sprite1_y_out));
+   
+    CollisionDetection CollisionDetection(.clk(clk), .player_1x(sprite1_x_out), .player_1y(sprite1_y_out), .player_2x(70), .player_2y(48), .player_1_collision(player1isColliding), .player_2_collision(player2isColliding));
+    assign led[15] = player1isColliding;
     //OLED Driver -----------------------------------
     reg [15:0] oled_colour;
     wire frame_begin;

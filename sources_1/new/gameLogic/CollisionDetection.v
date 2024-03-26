@@ -26,6 +26,7 @@ module CollisionDetection (
     input [6:0]player_1y,
     input [6:0]player_2x,
     input [6:0]player_2y,
+    input reset,
     output reg player_1_collision =0,
     output reg player_2_collision =0
 );
@@ -42,7 +43,7 @@ always @(posedge CLK_20Hz)begin
     distance_Y <= player_1y - player_2y;
     distance_squared <= (distance_X * distance_X) + (distance_Y * distance_Y);
     
-    if  (distance_squared < (15 * 15)) begin
+    if  (~reset &&distance_squared < (20 * 20)) begin
         player_1_collision <= 1;
         player_2_collision <= 1;
     end

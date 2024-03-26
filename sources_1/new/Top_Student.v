@@ -13,6 +13,7 @@
 
 module Top_Student (
     input clk,
+    input [15:0]sw,
     input btnC, btnL, btnR, btnU, btnD,
     output [7:0] JC,
     output [15:0] led
@@ -21,16 +22,20 @@ module Top_Student (
     //Physics Engine ---------------------------------
     wire[6:0] sprite1_x_out;
     wire[6:0] sprite1_y_out;
+    wire[6:0] sprite2_x_out;
+    wire[6:0] sprite2_y_out;
      
    wire player1isColliding;
    wire player2isColliding;
 
-    PhysicsEngine PhysicsEngine1(.velocityUp(led[7:0]),.player_no(1),.clk(clk),.reset(0),.isColliding(player1isColliding),.movingLeft(btnL),.movingRight(btnR),.isJumping(btnU),.sprite_x_out(sprite1_x_out),.sprite_y_out( sprite1_y_out));
-   
-    CollisionDetection CollisionDetection(.clk(clk), .player_1x(sprite1_x_out), .player_1y(sprite1_y_out), .player_2x(70), .player_2y(48), .player_1_collision(player1isColliding), .player_2_collision(player2isColliding));
+    PhysicsEngine PhysicsEngine1(.velocityUp(led[7:0]),.player_no(0),.clk(clk),.reset(sw[0]),.isColliding(player1isColliding),.movingLeft(btnL),.movingRight(btnR),.isJumping(btnU),.sprite_x_out(sprite1_x_out),.sprite_y_out( sprite1_y_out), .sprite2_x(sprite2_x_out),.sprite2_y(sprite2_y_out));
+    PhysicsEngine PhysicsEngine2(.velocityUp(0),.player_no(1),.clk(clk),.reset(sw[0]),.isColliding(player2isColliding),.movingLeft(sw[15]),.movingRight(sw[14]),.isJumping(sw[13]),.sprite_x_out(sprite2_x_out),.sprite_y_out( sprite2_y_out), .sprite2_x(sprite1_x_out),.sprite2_y(sprite1_y_out));
+
+    CollisionDetection CollisionDetection(.clk(clk),.reset(sw[0]), .player_1x(sprite1_x_out), .player_1y(sprite1_y_out), .player_2x(sprite2_x_out), .player_2y(sprite2_y_out), .player_1_collision(player1isColliding), .player_2_collision(player2isColliding));
     assign led[15] = player1isColliding;
     //OLED Driver -----------------------------------
     reg [15:0] oled_colour;
+    
     wire frame_begin;
     wire [12:0] pixel_index;
     wire sending_pixels, sample_pixel;
@@ -68,7 +73,7 @@ module Top_Student (
         wire [15:0] sprite_2_col;
         sprite_control sp2_ctr(.clk(clk),
                                 .modify_col(1), .mirror(1),
-                                .x(70), .y(ground_height),
+                                .x(sprite2_x_out), .y(sprite2_y_out),
                                 .in_air(0), .is_moving(1),
                                 .character_state({0,btnR}),
                                 .pixel_index(pixel_index),

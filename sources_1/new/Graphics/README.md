@@ -18,7 +18,7 @@ These modules should be used in `Top_Student.v`
 [CustomClock](#customclock-from-previous-task) is a global module for generating clocks, and its documentation here is just as a reminder for usage for modules.
 
 ## Current Features Implemented
-- Sprite moving, still and basic attack animation.
+- Sprite moving, still, basic attack and getting hit animation.
 - Coordinate translation and mirroring of the sprite.
 - Background image that changes its hue over time.
 - Option to generate 2 sprites with one in original colour and one reddish.
@@ -54,13 +54,15 @@ For showing sprite attack and moving animations.
 module sprite_control (
     input clk,
     input modify_col,input mirror,
-    input [6:0] x, //2^7 = 128 > 96 (x_max)
-    input [6:0] y, //2^7 = 128 > 63 (y_max)
-    input in_air, is_moving,
-    input [1:0] character_state,
+    input [6:0] x, 
+    input [6:0] y, 
+    input in_air,
+    input [1:0] move_state,
+    input [2:0] character_state,
+
     input [12:0] pixel_index,
     output reg [15:0] oled_colour
-);
+);  
 ```
 `input clk`: 100MHz Clock
 
@@ -71,12 +73,25 @@ module sprite_control (
 `input [6:0] x, input [6:0] y`: coordindate of the sprite, where 0,0 is the top left hand of the screen
 
 
-| `input [1:0] character_state`  | Description             |
+
+| `input [1:0] move_state` | Description             |
 |--------------------------------|-------------------------|
-| 2'b00                          | Not attacking  **DONE** |
-| 2'b01                          | Normal attack  **DONE** |
-| 2'b10                          | Special attack          |
-| 2'b11                          | Super special attack    |
+| 2'b00                          | Not Moving|
+| 2'b01                          | Moving Right|
+| 2'b10                         | Moving Left|
+
+
+
+| `input [2:0] character_state`  | Description             |
+|--------------------------------|-------------------------|
+| 3'b000                          | Not attacking  **DONE** |
+| 3'b001                          | Normal attack  **DONE** |
+| 3'b010                         | Got hit/injured **DONE** |
+| 3'b100                          | Special attack          |
+| 3'b110                          | Super special attack    |
+
+NOTE: For normal attack and getting injured, even if the state remains the animation will only happen ONE TIME
+
 
 `input [12:0] pixel_index` and `output reg [15:0] oled_colour` are typical oled input and outputs.
 

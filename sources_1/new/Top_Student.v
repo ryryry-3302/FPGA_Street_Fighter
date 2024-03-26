@@ -65,8 +65,8 @@ module Top_Student (
         sprite_control sp1_ctr(.clk(clk),
                                 .modify_col(0), .mirror(0),
                                 .x(sprite1_x_out), .y(sprite1_y_out),
-                                .in_air(0), .is_moving(1),
-                                .character_state({0,btnC} ),
+                                .in_air(0), .move_state({btnL,btnR}),
+                                .character_state({0,btnD,btnC} ),
                                 .pixel_index(pixel_index),
                                 .oled_colour(sprite_1_col));
                                 

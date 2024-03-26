@@ -10,7 +10,7 @@ from PIL import Image
 # Every other color +1 (Cap at 255)
 
 # MODIFY filename and size. Should be in images directory.
-filename = "Gui_State3.png"
+filename = "Gui_Inj3.png"
 size = (96,64)
 REMOVE_WHITE = True 
 
@@ -50,7 +50,7 @@ def print_sorted_dict(dict):
     print(res[:5])
 
 def check_white(r,g,b):
-    return (r==255) and (g==255) and (b==255)
+    return (r==31) and (g==63) and (b==31)
 
 file.write("always@(pixel_index) \n")
 file.write("begin\n")
@@ -64,9 +64,6 @@ for i in range(len(arr)):
             if (a < 200 and REMOVE_WHITE):
                 #file.write("16'b00000_000000_00000;\n")
                 add_colour((0,0,0))
-            elif(check_white(r,g,b) and REMOVE_WHITE):
-                #file.write("16'b00000_000000_00000;\n")
-                add_colour((0,0,0))
             else:
                 new_r = (r//8)+1
                 new_g = (g//4)+1
@@ -75,25 +72,31 @@ for i in range(len(arr)):
                 new_r = 31 if (r//8)+1 > 31 else (r//8)+1 
                 new_g = 63 if (g//4)+1 > 63 else (g//4)+1
                 new_b = 31 if (b//8)+1 > 31 else (b//8)+1
+
                 
-                add_colour((r,g,b))
-                file.write("\t\t" + str(count)+": oled_colour = ")
-                file.write("16'b" + '{0:05b}'.format(new_r) + "_" + '{0:06b}'.format(new_g) + "_" + '{0:05b}'.format(new_b) + "; \n")
+
+                if(check_white(new_r,new_g,new_b) and REMOVE_WHITE):
+                    add_colour((0,0,0))
+                else:
+                    add_colour((r,g,b))
+                    file.write("\t\t" + str(count)+": oled_colour = ")
+                    file.write("16'b" + '{0:05b}'.format(new_r) + "_" + '{0:06b}'.format(new_g) + "_" + '{0:05b}'.format(new_b) + "; \n")
                 
         elif len(arr[i][j]) == 3:
             r, g, b = arr[i][j]
+
+            new_r = (r//8)+1
+            new_g = (g//4)+1
+            new_b = (b//8)+1
+
+            new_r = 31 if (r//8)+1 > 31 else (r//8)+1 
+            new_g = 63 if (g//4)+1 > 63 else (g//4)+1
+            new_b = 31 if (b//8)+1 > 31 else (b//8)+1
+
             if(check_white(r,g,b) and REMOVE_WHITE):
-                #file.write("16'b00000_000000_00000;\n")
+                file.write("16'b00000_000000_00000;\n")
                 add_colour((0,0,0))
             else:
-                new_r = (r//8)+1
-                new_g = (g//4)+1
-                new_b = (b//8)+1
-
-                new_r = 31 if (r//8)+1 > 31 else (r//8)+1 
-                new_g = 63 if (g//4)+1 > 63 else (g//4)+1
-                new_b = 31 if (b//8)+1 > 31 else (b//8)+1
-                
                 add_colour((r,g,b))
                 file.write("\t\t" + str(count)+": oled_colour = ")
                 file.write("16'b" + '{0:05b}'.format(new_r) + "_" + '{0:06b}'.format(new_g) + "_" + '{0:05b}'.format(new_b) + "; \n")

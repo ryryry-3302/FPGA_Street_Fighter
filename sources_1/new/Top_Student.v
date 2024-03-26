@@ -30,8 +30,14 @@ module Top_Student (
 
     PhysicsEngine PhysicsEngine1(.velocityUp(led[7:0]),.player_no(0),.clk(clk),.reset(sw[0]),.isColliding(player1isColliding),.movingLeft(btnL),.movingRight(btnR),.isJumping(btnU),.sprite_x_out(sprite1_x_out),.sprite_y_out( sprite1_y_out), .sprite2_x(sprite2_x_out),.sprite2_y(sprite2_y_out));
     PhysicsEngine PhysicsEngine2(.velocityUp(0),.player_no(1),.clk(clk),.reset(sw[0]),.isColliding(player2isColliding),.movingLeft(sw[15]),.movingRight(sw[14]),.isJumping(sw[13]),.sprite_x_out(sprite2_x_out),.sprite_y_out( sprite2_y_out), .sprite2_x(sprite1_x_out),.sprite2_y(sprite1_y_out));
+    
+    
+    wire sprite1_facing_right;
+
 
     CollisionDetection CollisionDetection(.clk(clk),.reset(sw[0]), .player_1x(sprite1_x_out), .player_1y(sprite1_y_out), .player_2x(sprite2_x_out), .player_2y(sprite2_y_out), .player_1_collision(player1isColliding), .player_2_collision(player2isColliding));
+    FacingState FacingState( .sprite1_x(sprite1_x_out),.sprite1_y(sprite1_y_out),.sprite2_x(sprite2_x_out),.sprite2_y(sprite2_y_out),.sprite1_facing_right(sprite1_facing_right));
+    
     assign led[15] = player1isColliding;
     //OLED Driver -----------------------------------
     reg [15:0] oled_colour;
@@ -63,7 +69,7 @@ module Top_Student (
         
         wire [15:0] sprite_1_col;
         sprite_control sp1_ctr(.clk(clk),
-                                .modify_col(0), .mirror(0),
+                                .modify_col(0), .mirror(~sprite1_facing_right),
                                 .x(sprite1_x_out), .y(sprite1_y_out),
                                 .in_air(0), .move_state({btnL,btnR}),
                                 .character_state({0,btnD,btnC} ),
@@ -72,9 +78,9 @@ module Top_Student (
                                 
         wire [15:0] sprite_2_col;
         sprite_control sp2_ctr(.clk(clk),
-                                .modify_col(1), .mirror(1),
+                                .modify_col(1), .mirror(sprite1_facing_right),
                                 .x(sprite2_x_out), .y(sprite2_y_out),
-                                .in_air(0), .is_moving(1),
+                                .in_air(0), .move_state({sw[15],sw[13]}),
                                 .character_state({0,btnR}),
                                 .pixel_index(pixel_index),
                                 .oled_colour(sprite_2_col));                             

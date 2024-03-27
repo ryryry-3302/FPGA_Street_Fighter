@@ -15,9 +15,9 @@ module status_bar_update(
     reg [15:0] COLOUR_RED    = 16'b11111_000000_00000;
     reg [15:0] COLOUR_BLUE   = 16'b00000_000000_11111;
 
-    wire CLOCK_ANIMATE; //1Hz                    
+    wire CLOCK_ANIMATE;                    
     CustomClock clk1hz(.CLOCK_IN(clk),
-                        .COUNT_STOP(32'd2500000 - 1),
+                        .COUNT_STOP(32'd2_500_000 - 1),
                         .CLOCK_OUT(CLOCK_ANIMATE));
 
     wire [15:0] hb_right_col;

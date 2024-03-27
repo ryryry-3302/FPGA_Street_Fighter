@@ -50,7 +50,7 @@ module Top_Student (
     wire [8:0]health_1;
     wire [8:0]health_2;
     wire [2:0] winner;
-    HealthManagement HealthManagement(.clk(CLK_20Hz),.player_1_hitrangewire(player_1_hitrangewire), .attack_statex(btnC),.attack_statey(btnD), .health_1(health_1),.health_2(health_2), .state(winner));
+    HealthManagement HealthManagement(.clk(CLK_20Hz),.player_1_hitrangewire(player_1_hitrangewire), .attack_statex({btnD,btnC}),.attack_statey(btnD), .health_1(health_1),.health_2(health_2), .state(winner));
 
     assign led[2:1] = winner;
     //OLED Driver -----------------------------------
@@ -86,7 +86,7 @@ module Top_Student (
                                 .modify_col(0), .mirror(~sprite1_facing_right),
                                 .x(sprite1_x_out), .y(sprite1_y_out),
                                 .in_air(0), .move_state({btnL,btnR}),
-                                .character_state({0,0,btnC} ),
+                                .character_state({btnU,btnD,btnC} ),
                                 .pixel_index(pixel_index),
                                 .oled_colour(sprite_1_col));
                                 

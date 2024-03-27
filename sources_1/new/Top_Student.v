@@ -96,7 +96,7 @@ module Top_Student (
                                 .modify_col(0), .mirror(~sprite1_facing_right),
                                 .x(sprite1_x_out), .y(sprite1_y_out),
                                 .in_air(0), .move_state({btnL,btnR}),
-                                .character_state({0,0,btnC} ),
+                                .character_state({sw[2],sw[1],btnC} ),
                                 .pixel_index(pixel_index),
                                 .oled_colour(sprite_1_col));
                                 
@@ -105,7 +105,7 @@ module Top_Student (
                                 .modify_col(1), .mirror(sprite1_facing_right),
                                 .x(sprite2_x_out), .y(sprite2_y_out),
                                 .in_air(0), .move_state({sw[15],sw[13]}),
-                                .character_state({0,btnD}),
+                                .character_state({0,0,0}),
                                 .pixel_index(pixel_index),
                                 .oled_colour(sprite_2_col));                             
                               

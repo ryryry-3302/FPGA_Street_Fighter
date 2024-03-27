@@ -1,13 +1,13 @@
 module status_bar_update(
     input clk,
-    input [4:0] curr_health_l,
-    input [4:0] curr_health_r,
+    input [8:0] curr_health_l,
+    input [8:0] curr_health_r,
 
     input [12:0] pixel_index,
     output reg [15:0] oled_colour,
     
-    output [4:0] final_health_l,
-    output [4:0] final_health_r 
+    output [8:0] final_health_l,
+    output [8:0] final_health_r 
 );  
 
     reg [15:0] COLOUR_WHITE  = 16'hFFFF;
@@ -17,7 +17,7 @@ module status_bar_update(
 
     wire CLOCK_ANIMATE; //1Hz                    
     CustomClock clk1hz(.CLOCK_IN(clk),
-                        .COUNT_STOP(32'd50_000_000 - 1),
+                        .COUNT_STOP(32'd2500000 - 1),
                         .CLOCK_OUT(CLOCK_ANIMATE));
 
     wire [15:0] hb_right_col;

@@ -1,13 +1,13 @@
 module health_bar(
     input health_drop_clk,
-    input [4:0] curr_health,
+    input [8:0] curr_health,
     input [12:0] pixel_index,
     output reg [15:0] oled_colour,
-    output reg [4:0] prev_health = 31
+    output reg [8:0] prev_health = 200
 );
 
     //Value
-    parameter FULL_HEALTH = 31;    
+    parameter FULL_HEALTH = 200;    
 
     //Coords
     parameter X_HEALTH_START = 55;

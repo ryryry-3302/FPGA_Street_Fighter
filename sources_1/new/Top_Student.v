@@ -20,10 +20,11 @@ module Top_Student (
 );
 
     //Physics Engine ---------------------------------
-    //base clockrate 20hz
-    wire CLK_20Hz;
-    CustomClock clk20hz(.CLOCK_IN(clk),.COUNT_STOP(2500000),.CLOCK_OUT(CLK_20Hz));
     
+    
+    wire CLK_20Hz;
+    
+    CustomClock clk20hz(.CLOCK_IN(clk),.COUNT_STOP(2500000),.CLOCK_OUT(CLK_20Hz));
     wire[6:0] sprite1_x_out;
     wire[6:0] sprite1_y_out;
     wire[6:0] sprite2_x_out;
@@ -32,18 +33,26 @@ module Top_Student (
     wire player1isColliding;
     wire player2isColliding;
 
-
-    PhysicsEngine PhysicsEngine1(.velocityUp(led[7:0]),.player_no(0),.clk(clk),.reset(sw[0]),.isColliding(player1isColliding),.movingLeft(btnL),.movingRight(btnR),.isJumping(btnU),.sprite_x_out(sprite1_x_out),.sprite_y_out( sprite1_y_out), .sprite2_x(sprite2_x_out),.sprite2_y(sprite2_y_out));
-    PhysicsEngine PhysicsEngine2(.velocityUp(0),.player_no(1),.clk(clk),.reset(sw[0]),.isColliding(player2isColliding),.movingLeft(sw[15]),.movingRight(sw[14]),.isJumping(sw[13]),.sprite_x_out(sprite2_x_out),.sprite_y_out( sprite2_y_out), .sprite2_x(sprite1_x_out),.sprite2_y(sprite1_y_out));
+    PhysicsEngine PhysicsEngine1(.velocityUp(led[7:0]),.player_no(0),.clk(CLK_20Hz),.reset(sw[0]),.isColliding(player1isColliding),.movingLeft(btnL),.movingRight(btnR),.isJumping(btnU),.sprite_x_out(sprite1_x_out),.sprite_y_out( sprite1_y_out), .sprite2_x(sprite2_x_out),.sprite2_y(sprite2_y_out));
+    PhysicsEngine PhysicsEngine2(.velocityUp(0),.player_no(1),.clk(CLK_20Hz),.reset(sw[0]),.isColliding(player2isColliding),.movingLeft(sw[15]),.movingRight(sw[14]),.isJumping(sw[13]),.sprite_x_out(sprite2_x_out),.sprite_y_out( sprite2_y_out), .sprite2_x(sprite1_x_out),.sprite2_y(sprite1_y_out));
     
     
     wire sprite1_facing_right;
+    wire player_1_hitrangewire;
 
+    CollisionDetection CollisionDetection(.clk(CLK_20Hz),.reset(sw[0]), .player_1x(sprite1_x_out), .player_1y(sprite1_y_out), .player_2x(sprite2_x_out), .player_2y(sprite2_y_out), .player_1_collision(player1isColliding), .player_2_collision(player2isColliding),.player_1_hitrange(player_1_hitrangewire));
+    FacingState FacingState(.clk(CLK_20Hz), .sprite1_x(sprite1_x_out),.sprite1_y(sprite1_y_out),.sprite2_x(sprite2_x_out),.sprite2_y(sprite2_y_out),.sprite1_facing_right(sprite1_facing_right));
+    assign led[14] = player_1_hitrangewire;
 
-    CollisionDetection CollisionDetection(.clk(clk),.reset(sw[0]), .player_1x(sprite1_x_out), .player_1y(sprite1_y_out), .player_2x(sprite2_x_out), .player_2y(sprite2_y_out), .player_1_collision(player1isColliding), .player_2_collision(player2isColliding));
-    FacingState FacingState( .sprite1_x(sprite1_x_out),.sprite1_y(sprite1_y_out),.sprite2_x(sprite2_x_out),.sprite2_y(sprite2_y_out),.sprite1_facing_right(sprite1_facing_right));
-    
     assign led[15] = player1isColliding;
+    
+    //Hp management----------------------------------
+    wire [8:0]health_1;
+    wire [8:0]health_2;
+    wire [2:0] winner;
+    HealthManagement HealthManagement(.clk(CLK_20Hz),.player_1_hitrangewire(player_1_hitrangewire), .attack_statex(btnC),.attack_statey(btnD), .health_1(health_1),.health_2(health_2), .state(winner));
+
+    assign led[2:1] = winner;
     //OLED Driver -----------------------------------
     reg [15:0] oled_colour;
     
@@ -62,8 +71,8 @@ module Top_Student (
         wire [4:0] health_l;
         wire [4:0] health_r;
         status_bar_update sbu(.clk(clk),
-                              .curr_health_l(31),
-                              .curr_health_r(0),
+                              .curr_health_l(health_1),
+                              .curr_health_r(health_2),
                               .pixel_index(pixel_index),
                               .oled_colour(status_bar_col),
                               .final_health_l(health_l),
@@ -77,7 +86,7 @@ module Top_Student (
                                 .modify_col(0), .mirror(~sprite1_facing_right),
                                 .x(sprite1_x_out), .y(sprite1_y_out),
                                 .in_air(0), .move_state({btnL,btnR}),
-                                .character_state({0,btnD,btnC} ),
+                                .character_state({0,0,btnC} ),
                                 .pixel_index(pixel_index),
                                 .oled_colour(sprite_1_col));
                                 
@@ -86,7 +95,7 @@ module Top_Student (
                                 .modify_col(1), .mirror(sprite1_facing_right),
                                 .x(sprite2_x_out), .y(sprite2_y_out),
                                 .in_air(0), .move_state({sw[15],sw[13]}),
-                                .character_state({0,btnR}),
+                                .character_state({0,btnD}),
                                 .pixel_index(pixel_index),
                                 .oled_colour(sprite_2_col));                             
                               

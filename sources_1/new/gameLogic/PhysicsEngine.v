@@ -40,10 +40,9 @@ module PhysicsEngine (
     reg [6:0] velocity_y_down =0;
 
     // Define game state parameters
-    wire CLK_20Hz;
-    CustomClock clk20hz(.CLOCK_IN(clk),.COUNT_STOP(2500000),.CLOCK_OUT(CLK_20Hz));
     
-    always @(posedge CLK_20Hz) //clock at 20 ticks per second
+    
+    always @(posedge clk) //clock at 20 ticks per second
     begin
         if (reset) begin
             case (player_no)

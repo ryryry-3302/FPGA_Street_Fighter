@@ -28,6 +28,7 @@ module CollisionDetection (
     input [6:0]player_2y,
     input reset,
     output reg player_1_collision =0,
+    output reg player_1_hitrange =0,
     output reg player_2_collision =0
 );
 
@@ -35,10 +36,7 @@ reg [15:0] distance_X;
 reg [15:0] distance_Y;
 reg [15:0] distance_squared;
 
-wire CLK_20Hz;
-
-CustomClock clk20hz(.CLOCK_IN(clk),.COUNT_STOP(2500000),.CLOCK_OUT(CLK_20Hz));
-always @(posedge CLK_20Hz)begin
+always @(posedge clk)begin
     distance_X <= player_1x - player_2x;
     distance_Y <= player_1y - player_2y;
     distance_squared <= (distance_X * distance_X) + (distance_Y * distance_Y);
@@ -50,7 +48,14 @@ always @(posedge CLK_20Hz)begin
     else begin
         player_1_collision <= 0;
         player_2_collision <= 0;
-    end     
+    end
+
+   if  (~reset &&distance_squared < (24 * 24)) begin
+        player_1_hitrange <= 1;
+    end
+    else begin
+        player_1_hitrange <= 0;        
+    end      
 end
 
 

@@ -1,4 +1,5 @@
 module FacingState (
+    input clk,
     input [6:0] sprite1_x,
     input [6:0] sprite1_y,
     input [6:0] sprite2_x,
@@ -8,8 +9,8 @@ module FacingState (
 );
 
 
-
-    always @(*) begin
+    
+    always @(clk) begin
         if (sprite1_x > sprite2_x) begin
             sprite1_facing_right = 0;
 

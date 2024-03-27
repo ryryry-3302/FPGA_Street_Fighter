@@ -27,13 +27,13 @@ module debouncer(
     output buttonSignal
     );
     
-    wire debounce2000HzSig; 
-    CustomClock debouncer(clk, 249,debounce2000HzSig);
+    wire debounce20HzSig; 
+    CustomClock debouncer(clk, 2499999,debounce20HzSig);
     
     reg buttonSignalReg;
     assign buttonSignal = buttonSignalReg;
     
-    always @ (posedge debounce2000HzSig)begin 
+    always @ (posedge debounce20HzSig)begin 
         buttonSignalReg = button;
     end
 endmodule

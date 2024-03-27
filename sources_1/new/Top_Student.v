@@ -19,10 +19,107 @@ module Top_Student (
     output [15:0] led
 );
 
+    wire CLK_20Hz; //the master TPS clock
+    
+    //player movement ----------------------
+    
+    //player 1 inputs
+    wire player1CharChoice; //3 bit value, can ignore for now if we dont have more char choices
+    wire player1IsCrouched;
+    wire player1IsInAir;
+    wire player1IsStunned;
+    wire player1IsPerformingAttackAnimation;
+    
+    //player 1 outputs
+    wire player1Crouching;
+    wire player1movingLeft;
+    wire player1movingRight;
+    wire player1Jumping;
+    wire player1Blocking;
+    wire [1:0]player1ComboMove; //0 means not attacking, 1 means nornmal attack, 2 means special attack, 3 means super attack
+    assign led[9:8] = player1ComboMove[1:0]; //lights up for checking of combo moves
+    
+    //player 2 controls EDITS HERE TO CONNECT TO BOT/2ND PLAYER
+    wire player2UpBtn;
+    wire player2DownBtn;
+    wire player2LeftBtn;
+    wire player2RightBtn;
+    wire player2AttackBtn;
+    
+    
+    //player 2 inputs
+    wire player2CharChoice; //3 bit value, can ignore for now if we dont have more char choices
+    wire player2IsCrouched;
+    wire player2IsInAir;
+    wire player2IsStunned;
+    wire player2IsPerformingAttackAnimation;
+    
+    //player 2 outputs
+    wire player2Crouching;
+    wire player2movingLeft;
+    wire player2movingRight;
+    wire player2Jumping;
+    wire player2Blocking;
+    wire [1:0]player2ComboMove; //0 means not attacking, 1 means nornmal attack, 2 means special attack, 3 means super attack
+        
+    
+    playerMovementHandler player1MovementHandler(
+    //raw inputs
+    .clk(clk), 
+    .gameTicks(CLK_20Hz), 
+    .playerNumber(0), 
+    .upButtonRaw(btnU), 
+    .downButtonRaw(btnD), 
+    .leftButtonRaw(btnL), 
+    .rightButtonRaw(btnR), 
+    .attackButtonRaw(btnC), 
+    .blockButtonRaw(0), 
+    //outputs
+    .isCrouching(player1Crouching),
+    .movingLeft(player1movingLeft),
+    .movingRight(player1movingRight),
+    .isJumping(player1Jumping),
+    .isBlocking(0),
+    .comboMove(player1ComboMove),
+    //gamestate inputs
+    .playerChar(player1CharChoice),
+    .isCrouched(player1IsCrouched),
+    .isInAir(player1IsInAir),
+    .isStunned(player1IsStunned),
+    .isPerformingAttackAnimation(player1IsPerformingAttackAnimation)
+    );
+       
+    playerMovementHandler player2MovementHandler(
+    //raw inputs
+    .clk(clk), 
+    .gameTicks(CLK_20Hz), 
+    .playerNumber(1), 
+    .upButtonRaw(player2UpBtn), 
+    .downButtonRaw(player2DownBtn), 
+    .leftButtonRaw(player2LeftBtn), 
+    .rightButtonRaw(player2RightBtn), 
+    .attackButtonRaw(player2AttackBtn), 
+    .blockButtonRaw(0), 
+    //outputs
+    .isCrouching(player2Crouching),
+    .movingLeft(player2movingLeft),
+    .movingRight(player2movingRight),
+    .isJumping(player2Jumping),
+    .isBlocking(0),
+    .comboMove(player2ComboMove),
+    //gamestate inputs
+    .playerChar(player2CharChoice),
+    .isCrouched(player2IsCrouched),
+    .isInAir(player2IsInAir),
+    .isStunned(player2IsStunned),
+    .isPerformingAttackAnimation(player2IsPerformingAttackAnimation)
+    );
+
+    
     //Physics Engine ---------------------------------
     
     
-    wire CLK_20Hz;
+    
     
     CustomClock clk20hz(.CLOCK_IN(clk),.COUNT_STOP(2500000),.CLOCK_OUT(CLK_20Hz));
     wire[6:0] sprite1_x_out;
@@ -33,8 +130,8 @@ module Top_Student (
     wire player1isColliding;
     wire player2isColliding;
 
-    PhysicsEngine PhysicsEngine1(.velocityUp(led[7:0]),.player_no(0),.clk(CLK_20Hz),.reset(sw[0]),.isColliding(player1isColliding),.movingLeft(btnL),.movingRight(btnR),.isJumping(btnU),.sprite_x_out(sprite1_x_out),.sprite_y_out( sprite1_y_out), .sprite2_x(sprite2_x_out),.sprite2_y(sprite2_y_out));
-    PhysicsEngine PhysicsEngine2(.velocityUp(0),.player_no(1),.clk(CLK_20Hz),.reset(sw[0]),.isColliding(player2isColliding),.movingLeft(sw[15]),.movingRight(sw[14]),.isJumping(sw[13]),.sprite_x_out(sprite2_x_out),.sprite_y_out( sprite2_y_out), .sprite2_x(sprite1_x_out),.sprite2_y(sprite1_y_out));
+    PhysicsEngine PhysicsEngine1(.velocityUp(led[7:0]),.player_no(0),.clk(CLK_20Hz),.reset(sw[0]),.isColliding(player1isColliding),.movingLeft(player1movingLeft),.movingRight(player1movingRight),.isJumping(player1Jumping),.sprite_x_out(sprite1_x_out),.sprite_y_out( sprite1_y_out), .sprite2_x(sprite2_x_out),.sprite2_y(sprite2_y_out));
+    PhysicsEngine PhysicsEngine2(.velocityUp(0),.player_no(1),.clk(CLK_20Hz),.reset(sw[0]),.isColliding(player2isColliding),.movingLeft(player2movingLeft),.movingRight(player2movingRight),.isJumping(player2Jumping),.sprite_x_out(sprite2_x_out),.sprite_y_out( sprite2_y_out), .sprite2_x(sprite1_x_out),.sprite2_y(sprite1_y_out));
     
     
     wire sprite1_facing_right;
@@ -52,7 +149,7 @@ module Top_Student (
     wire [2:0] winner;
     HealthManagement HealthManagement(.clk(CLK_20Hz),.reset(sw[15]),
                      .player_1_hitrangewire(player_1_hitrangewire),
-                     .attack_statex(btnC),.attack_statey(btnD),
+                     .attack_statex(player1ComboMove),.attack_statey(player2ComboMove),
                      .health_1(health_1),.health_2(health_2),
                      .state(winner));
 

@@ -10,8 +10,7 @@
 
 ## Documentation
 
-### status_bar_update
-Updates the top KO/Status bar based on the current health of both sprites. Animation to show health dropping towards the current value has been implemented.
+### Collision Detector
 ```verilog
 module CollisionDetection (
     input clk,
@@ -28,8 +27,8 @@ module CollisionDetection (
 `output reg player_1_collision`: High when players centres are within 15 pixels
 `output reg player_1_hitrange` : High when players are within 20 pixels
 
-### sprite_control
-For showing sprite attack and moving animations.
+### health management
+
 ```verilog
 module HealthManagement (input clk,input reset, input player_1_hitrangewire, input [1:0] attack_statex,
 input [1:0] attack_statey, output reg [8:0]health_1=200, output reg [8:0] health_2 =200, output reg [2:0]state);

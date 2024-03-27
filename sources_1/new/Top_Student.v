@@ -20,13 +20,18 @@ module Top_Student (
 );
 
     //Physics Engine ---------------------------------
+    //base clockrate 20hz
+    wire CLK_20Hz;
+    CustomClock clk20hz(.CLOCK_IN(clk),.COUNT_STOP(2500000),.CLOCK_OUT(CLK_20Hz));
+    
     wire[6:0] sprite1_x_out;
     wire[6:0] sprite1_y_out;
     wire[6:0] sprite2_x_out;
     wire[6:0] sprite2_y_out;
      
-   wire player1isColliding;
-   wire player2isColliding;
+    wire player1isColliding;
+    wire player2isColliding;
+
 
     PhysicsEngine PhysicsEngine1(.velocityUp(led[7:0]),.player_no(0),.clk(clk),.reset(sw[0]),.isColliding(player1isColliding),.movingLeft(btnL),.movingRight(btnR),.isJumping(btnU),.sprite_x_out(sprite1_x_out),.sprite_y_out( sprite1_y_out), .sprite2_x(sprite2_x_out),.sprite2_y(sprite2_y_out));
     PhysicsEngine PhysicsEngine2(.velocityUp(0),.player_no(1),.clk(clk),.reset(sw[0]),.isColliding(player2isColliding),.movingLeft(sw[15]),.movingRight(sw[14]),.isJumping(sw[13]),.sprite_x_out(sprite2_x_out),.sprite_y_out( sprite2_y_out), .sprite2_x(sprite1_x_out),.sprite2_y(sprite1_y_out));

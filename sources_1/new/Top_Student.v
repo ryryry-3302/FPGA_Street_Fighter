@@ -47,12 +47,19 @@ module Top_Student (
     assign led[15] = player1isColliding;
     
     //Hp management----------------------------------
-    wire [8:0]health_1;
-    wire [8:0]health_2;
+    wire [8:0] health_1;
+    wire [8:0] health_2;
     wire [2:0] winner;
-    HealthManagement HealthManagement(.clk(CLK_20Hz),.player_1_hitrangewire(player_1_hitrangewire), .attack_statex(btnC),.attack_statey(btnD), .health_1(health_1),.health_2(health_2), .state(winner));
+    HealthManagement HealthManagement(.clk(CLK_20Hz),.reset(sw[15]),
+                     .player_1_hitrangewire(player_1_hitrangewire),
+                     .attack_statex(btnC),.attack_statey(btnD),
+                     .health_1(health_1),.health_2(health_2),
+                     .state(winner));
 
     assign led[2:1] = winner;
+    //------------------------------------------------
+    
+    
     //OLED Driver -----------------------------------
     reg [15:0] oled_colour;
     
@@ -66,6 +73,8 @@ module Top_Student (
                          .CLOCK_OUT(CLK_6MHz25));
 
     //------------------------------------------------
+    
+    
     //Status Bar -------------------------------------------
         wire [15:0] status_bar_col;
         wire [4:0] health_l;
@@ -77,6 +86,7 @@ module Top_Student (
                               .oled_colour(status_bar_col),
                               .final_health_l(health_l),
                               .final_health_r(health_r));
+    //------------------------------------------------                          
     
     //2 Sprites -------------------------------------------
         integer ground_height = 48;

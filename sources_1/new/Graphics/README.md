@@ -22,12 +22,12 @@ These modules should be used in `Top_Student.v`
 - Coordinate translation and mirroring of the sprite.
 - Background image that changes its hue over time.
 - Option to generate 2 sprites with one in original colour and one reddish.
-- Health bar (KO bar) with dropping health animation.
+- Health bar (KO bar) with dropping health animation. Reset health bar available.
 
 ## Documentation
 
 ### status_bar_update
-Updates the top KO/Status bar based on the current health of both sprites. Animation to show health dropping towards the current value has been implemented.
+Updates the top KO/Status bar based on the current health of both sprites. Animation to show health dropping towards the current value has been implemented. To reset the health bar, write the desired heatlh value to `curr_health_l` and/or `curr_health_r`.
 ```verilog
 module status_bar_update(
     input clk,
@@ -74,23 +74,23 @@ module sprite_control (
 
 
 
-| `input [1:0] move_state` | Description             |
-|--------------------------------|-------------------------|
-| 2'b00                          | Not Moving|
-| 2'b01                          | Moving Right|
-| 2'b10                         | Moving Left|
+| `input [1:0] move_state` | Description    |
+|--------------------------|----------------|
+| 2'b00                    | Not Moving     |
+| 2'b01                    | Moving Right   |
+| 2'b10                    | Moving Left    |
 
+Note that `move_state` animations will only show if `character_state` is set to `0`.
 
+| `input [2:0] character_state`   | Description             | Done  | 
+|-------------------------------- |-------------------------|-------| 
+| 3'b000                          | Not attacking           |   Y   | 
+| 3'b001                          | Normal attack           |   Y   | 
+| 3'b010                          | Special attack          |   Y   | 
+| 3'b011                          | Super special attack    |       | 
+| 3'b100                          | Got hit/injured         |   Y   | 
 
-| `input [2:0] character_state`  | Description             |
-|--------------------------------|-------------------------|
-| 3'b000                          | Not attacking  **DONE** |
-| 3'b001                          | Normal attack  **DONE** |
-| 3'b010                         | Got hit/injured **DONE** |
-| 3'b100                          | Special attack          |
-| 3'b110                          | Super special attack    |
-
-NOTE: For normal attack and getting injured, even if the state remains the animation will only happen ONE TIME
+NOTE: For attacks and getting injured, `character_state` is read. If it changes, the animation runs to the end, and does not reset unless `character_state` changes. This is to ensure that animations are run for only one hit.
 
 
 `input [12:0] pixel_index` and `output reg [15:0] oled_colour` are typical oled input and outputs.

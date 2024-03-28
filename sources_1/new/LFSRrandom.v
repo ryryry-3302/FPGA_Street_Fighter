@@ -3,9 +3,9 @@
 // Company: 
 // Engineer: 
 // 
-// Create Date: 20.03.2024 17:45:03
+// Create Date: 28.03.2024 17:01:00
 // Design Name: 
-// Module Name: debouncer
+// Module Name: LFSRrandom
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -20,20 +20,16 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module debouncer(
+module LFSRrandom(
     input clk,
-    input button,
-    
-    output buttonSignal
+    output [4:0]random5bit
     );
+    reg [15:0]seed = 35281; //random seed selected
     
-    wire debounce20HzSig; 
-    CustomClock debouncer(clk, 2499999,debounce20HzSig);
-    
-    reg buttonSignalReg;
-    assign buttonSignal = buttonSignalReg;
-    
-    always @ (posedge debounce20HzSig)begin 
-        buttonSignalReg = button;
+    always @ (posedge clk) begin
+        seed[15:1] <= seed[14:0];
+        seed[0] = seed[4]^seed[12]^seed[15];
     end
+    
+    assign random5bit = seed[15:11];
 endmodule

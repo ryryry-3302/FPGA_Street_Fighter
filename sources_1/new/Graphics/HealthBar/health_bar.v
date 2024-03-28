@@ -29,6 +29,10 @@ module health_bar(
     begin
         if( (prev_health > curr_health) && (prev_health > 0) )
             prev_health = prev_health - 1;
+        else if(prev_health < curr_health)
+            prev_health = curr_health;
+            
+        //else if prev_health == curr_health, no animation
     end
 
 

@@ -19,10 +19,125 @@ module Top_Student (
     output [15:0] led
 );
 
+    wire CLK_20Hz; //the master TPS clock
+    
+    wire player1BOT; wire player2BOT;
+    assign player1BOT = sw[8]; assign player2BOT = sw[7];
+    
+    wire [4:0]random5bitValue1; //our random value. seed is built into the module | ranges from 0 to 31 (inclusive)
+    wire [4:0]random5bitValue2; //our random value. seed is built into the module | ranges from 0 to 31 (inclusive) 
+    LFSRrandom randomizer1(clk, random5bitValue1); 
+    anotherLFSRrandom randomizer2(clk, random5bitValue2);
+    
+    //player movement ----------------------
+    
+    //player 1 inputs
+    wire player1CharChoice; //3 bit value, can ignore for now if we dont have more char choices
+    wire player1IsCrouched;
+    wire player1IsInAir;
+    wire player1IsStunned;
+    wire player1IsPerformingAttackAnimation;
+    
+    //player 1 outputs
+    wire player1Crouching;
+    wire player1movingLeft;
+    wire player1movingRight;
+    wire player1Jumping;
+    wire player1Blocking;
+    wire [1:0]player1ComboMove; //0 means not attacking, 1 means nornmal attack, 2 means special attack, 3 means super attack
+    assign led[9:8] = player1ComboMove[1:0]; //lights up for checking of combo moves
+    
+    //player 2 controls EDITS HERE TO CONNECT TO BOT/2ND PLAYER
+    wire player2UpBtn;
+    wire player2DownBtn;
+    wire player2LeftBtn;
+    wire player2RightBtn;
+    wire player2AttackBtn;
+    
+    
+    //player 2 inputs
+    wire player2CharChoice; //3 bit value, can ignore for now if we dont have more char choices
+    wire player2IsCrouched;
+    wire player2IsInAir;
+    wire player2IsStunned;
+    wire player2IsPerformingAttackAnimation;
+    
+    //player 2 outputs
+    wire player2Crouching;
+    wire player2movingLeft;
+    wire player2movingRight;
+    wire player2Jumping;
+    wire player2Blocking;
+    wire [1:0]player2ComboMove; //0 means not attacking, 1 means nornmal attack, 2 means special attack, 3 means super attack
+    assign led[7:6] = player2ComboMove[1:0]; //lights up for checking of combo moves
+         
+    
+    playerMovementHandler player1MovementHandler(
+    //for AI
+    .random5bit(random5bitValue1),
+    .BYPASS(player1BOT),
+    //raw inputs
+    .clk(clk), 
+    .gameTicks(CLK_20Hz), 
+    .playerNumber(0), 
+    .upButtonRaw(btnU), 
+    .downButtonRaw(btnD), 
+    .leftButtonRaw(btnL), 
+    .rightButtonRaw(btnR), 
+    .attackButtonRaw(btnC), 
+    .blockButtonRaw(0), 
+    //outputs
+    .isCrouching(player1Crouching),
+    .movingLeft(player1movingLeft),
+    .movingRight(player1movingRight),
+    .isJumping(player1Jumping),
+    .isBlocking(0),
+    .comboMove(player1ComboMove),
+    //gamestate inputs
+    .playerChar(player1CharChoice),
+    .isCrouched(player1IsCrouched),
+    .isInAir(player1IsInAir),
+    .isStunned(player1IsStunned),
+    .isPerformingAttackAnimation(player1IsPerformingAttackAnimation)
+    );
+       
+    playerMovementHandler player2MovementHandler(
+    //for AI
+    .random5bit(random5bitValue2),
+    .BYPASS(player2BOT),
+    //raw inputs
+    .clk(clk), 
+    .gameTicks(CLK_20Hz), 
+    .playerNumber(1), 
+    .upButtonRaw(player2UpBtn), 
+    .downButtonRaw(player2DownBtn), 
+    .leftButtonRaw(player2LeftBtn), 
+    .rightButtonRaw(player2RightBtn), 
+    .attackButtonRaw(player2AttackBtn), 
+    .blockButtonRaw(0), 
+    //outputs
+    .isCrouching(player2Crouching),
+    .movingLeft(player2movingLeft),
+    .movingRight(player2movingRight),
+    .isJumping(player2Jumping),
+    .isBlocking(0),
+    .comboMove(player2ComboMove),
+    //gamestate inputs
+    .playerChar(player2CharChoice),
+    .isCrouched(player2IsCrouched),
+    .isInAir(player2IsInAir),
+    .isStunned(player2IsStunned),
+    .isPerformingAttackAnimation(player2IsPerformingAttackAnimation)
+    );
+
+    
+    //player2 AI
+    
+    
     //Physics Engine ---------------------------------
     
     
-    wire CLK_20Hz;
+    
     
     CustomClock clk20hz(.CLOCK_IN(clk),.COUNT_STOP(2500000),.CLOCK_OUT(CLK_20Hz));
     wire[6:0] sprite1_x_out;
@@ -33,8 +148,8 @@ module Top_Student (
     wire player1isColliding;
     wire player2isColliding;
 
-    PhysicsEngine PhysicsEngine1(.velocityUp(led[7:0]),.player_no(0),.clk(CLK_20Hz),.reset(sw[0]),.isColliding(player1isColliding),.movingLeft(btnL),.movingRight(btnR),.isJumping(btnU),.sprite_x_out(sprite1_x_out),.sprite_y_out( sprite1_y_out), .sprite2_x(sprite2_x_out),.sprite2_y(sprite2_y_out));
-    PhysicsEngine PhysicsEngine2(.velocityUp(0),.player_no(1),.clk(CLK_20Hz),.reset(sw[0]),.isColliding(player2isColliding),.movingLeft(sw[15]),.movingRight(sw[14]),.isJumping(sw[13]),.sprite_x_out(sprite2_x_out),.sprite_y_out( sprite2_y_out), .sprite2_x(sprite1_x_out),.sprite2_y(sprite1_y_out));
+    PhysicsEngine PhysicsEngine1(.velocityUp(led[7:0]),.player_no(0),.clk(CLK_20Hz),.reset(sw[0]),.isColliding(player1isColliding),.movingLeft(player1movingLeft),.movingRight(player1movingRight),.isJumping(player1Jumping),.sprite_x_out(sprite1_x_out),.sprite_y_out( sprite1_y_out), .sprite2_x(sprite2_x_out),.sprite2_y(sprite2_y_out));
+    PhysicsEngine PhysicsEngine2(.velocityUp(0),.player_no(1),.clk(CLK_20Hz),.reset(sw[0]),.isColliding(player2isColliding),.movingLeft(player2movingLeft),.movingRight(player2movingRight),.isJumping(player2Jumping),.sprite_x_out(sprite2_x_out),.sprite_y_out( sprite2_y_out), .sprite2_x(sprite1_x_out),.sprite2_y(sprite1_y_out));
     
     
     wire sprite1_facing_right;
@@ -47,12 +162,19 @@ module Top_Student (
     assign led[15] = player1isColliding;
     
     //Hp management----------------------------------
-    wire [8:0]health_1;
-    wire [8:0]health_2;
+    wire [8:0] health_1;
+    wire [8:0] health_2;
     wire [2:0] winner;
-    HealthManagement HealthManagement(.clk(CLK_20Hz),.player_1_hitrangewire(player_1_hitrangewire), .attack_statex({btnD,btnC}),.attack_statey(btnD), .health_1(health_1),.health_2(health_2), .state(winner));
+    HealthManagement HealthManagement(.clk(CLK_20Hz),.reset(sw[15]),
+                     .player_1_hitrangewire(player_1_hitrangewire),
+                     .attack_statex(player1ComboMove),.attack_statey(player2ComboMove),
+                     .health_1(health_1),.health_2(health_2),
+                     .state(winner));
 
     assign led[2:1] = winner;
+    //------------------------------------------------
+    
+    
     //OLED Driver -----------------------------------
     reg [15:0] oled_colour;
     
@@ -66,6 +188,8 @@ module Top_Student (
                          .CLOCK_OUT(CLK_6MHz25));
 
     //------------------------------------------------
+    
+    
     //Status Bar -------------------------------------------
         wire [15:0] status_bar_col;
         wire [4:0] health_l;
@@ -77,6 +201,7 @@ module Top_Student (
                               .oled_colour(status_bar_col),
                               .final_health_l(health_l),
                               .final_health_r(health_r));
+    //------------------------------------------------                          
     
     //2 Sprites -------------------------------------------
         integer ground_height = 48;
@@ -86,7 +211,7 @@ module Top_Student (
                                 .modify_col(0), .mirror(~sprite1_facing_right),
                                 .x(sprite1_x_out), .y(sprite1_y_out),
                                 .in_air(0), .move_state({btnL,btnR}),
-                                .character_state({btnU,btnD,btnC} ),
+                                .character_state({sw[2],sw[1],btnC} ),
                                 .pixel_index(pixel_index),
                                 .oled_colour(sprite_1_col));
                                 
@@ -95,7 +220,7 @@ module Top_Student (
                                 .modify_col(1), .mirror(sprite1_facing_right),
                                 .x(sprite2_x_out), .y(sprite2_y_out),
                                 .in_air(0), .move_state({sw[15],sw[13]}),
-                                .character_state({0,btnD}),
+                                .character_state({0,0,0}),
                                 .pixel_index(pixel_index),
                                 .oled_colour(sprite_2_col));                             
                               

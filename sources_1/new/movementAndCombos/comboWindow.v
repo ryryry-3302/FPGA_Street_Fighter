@@ -43,10 +43,10 @@ module comboWindow(
             windowOpen = 1;
         end
         if (cancel && !playerInput) begin 
-            count = (0); //instead of ending the counter immedietly, we set the count to very high to avoid race condition with the next combo detection
+            count = (24999998); //instead of ending the counter immedietly, we set the count to very high to avoid race condition with the next combo detection
         end
         //window remains open for 0.5 seconds //NVM IM CHANGING IT TO 2 SO ITS EASIER
-        count = ((count > (24999999)) || !windowOpen)? 0: count + 1;
+        count = ((count > (24999999)))? 0: count + 1;
         if (count == 0) begin
             windowOpen = 0;
         end  

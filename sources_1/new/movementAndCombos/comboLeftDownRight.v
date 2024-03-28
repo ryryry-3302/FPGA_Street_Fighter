@@ -42,22 +42,25 @@ module comboLeftDownRight(
     
     wire [8:0]move;
     comboWindow leftWindow(clk, left, allInputs, move[0]);
-    comboWindow downWindow(clk, down, allInputs, move[1]);
-    comboWindow rightWindow(clk, right, allInputs, move[2]);
-    comboWindow attackWindow(clk, attack, allInputs, move[3]);
+    comboWindow downWindow(clk, move[0]?down:0, allInputs, move[1]);
+    comboWindow rightWindow(clk, move[1]?right:0, allInputs, move[2]);
+    comboWindow attackWindow(clk, move[2]?attack:0, allInputs, move[3]);
     //testing currently. up down right
     
     always @ (posedge clk) begin
         if (bypass) begin success <= 1; end
-        if (move[0]) begin
-            if (move[1]) begin
-                if (move[2]) begin
-                    if (move[3]) begin
-                        success = 1;
-                    end
-                end
+//        if (move[0]) begin
+//            if (move[1]) begin
+//                if (move[2]) begin
+//                    if (move[3]) begin
+//                        success = 1;
+//                    end
+//                end
+//            end
+//        end
+            if (move[3]) begin
+                success = 1;
             end
-        end
         if (!move[3]) begin success = 0; end
     end
     

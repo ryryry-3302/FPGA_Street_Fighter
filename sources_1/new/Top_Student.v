@@ -21,6 +21,14 @@ module Top_Student (
 
     wire CLK_20Hz; //the master TPS clock
     
+    wire player1BOT; wire player2BOT;
+    assign player1BOT = sw[8]; assign player2BOT = sw[7];
+    
+    wire [4:0]random5bitValue1; //our random value. seed is built into the module | ranges from 0 to 31 (inclusive)
+    wire [4:0]random5bitValue2; //our random value. seed is built into the module | ranges from 0 to 31 (inclusive) 
+    LFSRrandom randomizer1(clk, random5bitValue1); 
+    anotherLFSRrandom randomizer2(clk, random5bitValue2);
+    
     //player movement ----------------------
     
     //player 1 inputs
@@ -61,9 +69,13 @@ module Top_Student (
     wire player2Jumping;
     wire player2Blocking;
     wire [1:0]player2ComboMove; //0 means not attacking, 1 means nornmal attack, 2 means special attack, 3 means super attack
-        
+    assign led[7:6] = player2ComboMove[1:0]; //lights up for checking of combo moves
+         
     
     playerMovementHandler player1MovementHandler(
+    //for AI
+    .random5bit(random5bitValue1),
+    .BYPASS(player1BOT),
     //raw inputs
     .clk(clk), 
     .gameTicks(CLK_20Hz), 
@@ -90,6 +102,9 @@ module Top_Student (
     );
        
     playerMovementHandler player2MovementHandler(
+    //for AI
+    .random5bit(random5bitValue2),
+    .BYPASS(player2BOT),
     //raw inputs
     .clk(clk), 
     .gameTicks(CLK_20Hz), 
@@ -115,6 +130,9 @@ module Top_Student (
     .isPerformingAttackAnimation(player2IsPerformingAttackAnimation)
     );
 
+    
+    //player2 AI
+    
     
     //Physics Engine ---------------------------------
     

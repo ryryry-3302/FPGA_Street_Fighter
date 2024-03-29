@@ -7,6 +7,18 @@ Development of a FPGA Street Fighter Game
 - [Configuration](#configuration)
 - [Troubleshooting](#troubleshooting)
 - [.gitignore](#gitignore)
+## Expected Behaviour
+### Switch mappings
+- sw[0] reset players positions to start and reset hp to full
+- sw[7] player 2 receives AI inputs
+- sw[8] player 1 receives AI inputs
+
+### led mapping
+- led[15] Players are colliding and cannot move past each other
+- led[14] players within attack range
+- led[2:1] = winner; //state 00 fight //state 01 player 1 wins //state 02 player 2 wins
+- led[7:6] = player 2 comboMove  //0 means not attacking, 1 means nornmal attack, 2 means special attack, 3 means super attack
+- led[9:8] = player 1 comboMove 
 
 ## Configuration
 cd into the MODS folder and clone this repo.

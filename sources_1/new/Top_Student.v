@@ -165,7 +165,7 @@ module Top_Student (
     wire [8:0] health_1;
     wire [8:0] health_2;
     wire [2:0] winner;
-    HealthManagement HealthManagement(.clk(CLK_20Hz),.reset(sw[15]),
+    HealthManagement HealthManagement(.clk(CLK_20Hz),.reset(sw[0]),
                      .player_1_hitrangewire(player_1_hitrangewire),
                      .attack_statex(player1ComboMove),.attack_statey(player2ComboMove),
                      .health_1(health_1),.health_2(health_2),

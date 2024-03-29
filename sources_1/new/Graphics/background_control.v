@@ -5,8 +5,11 @@ module backgroud_control(
 );
 
     wire [15:0] background_colour_orig;
-    Background bg(pixel_index, background_colour_orig); 
+    Background bg(pixel_index, background_colour_orig);
+    
+    assign oled_colour = background_colour_orig; 
 
+/*
     wire CLOCK_BG;                    
     CustomClock clk5hz(.CLOCK_IN(clk),
                         .COUNT_STOP(32'd10_000_000 - 1),
@@ -25,7 +28,7 @@ module backgroud_control(
     begin
         adder = adder + 1;
     end
-    
+*/    
 
 
 

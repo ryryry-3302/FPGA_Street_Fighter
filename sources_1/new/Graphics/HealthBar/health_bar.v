@@ -20,9 +20,9 @@ module health_bar(
     parameter ACT_HEALTH_HEIGHT = 6; 
 
 
-    reg [15:0] COLOUR_YELLOW = 16'b11111_111111_00000;
-    reg [15:0] COLOUR_RED    = 16'b11111_000000_00000;
-    reg [15:0] COLOUR_WHITE    = 16'hFFFF;
+    parameter COLOUR_YELLOW = 16'b11111_111111_00000;
+    parameter COLOUR_RED    = 16'b11111_000000_00000;
+    parameter COLOUR_WHITE    = 16'hFFFF;
     
 
     always@(posedge health_drop_clk)

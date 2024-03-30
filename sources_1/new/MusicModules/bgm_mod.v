@@ -21,11 +21,8 @@
 
 
 //module bgm_mod(input enable, input clk, output reg music_reg);
-module bgm_mod(
-    input clk,       // from Basys 3
-    input play,             // btnD
-    output speaker          // PMOD JB[0]
-    );
+module bgm_mod(input clk, output speaker // PMOD JB[0]
+);
 //Mortal Combat Theme
 
 //// <Creation of Frequencies> ////

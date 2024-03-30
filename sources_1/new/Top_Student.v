@@ -15,6 +15,10 @@ module Top_Student (
     input clk,
     input [15:0]sw,
     input btnC, btnL, btnR, btnU, btnD,
+    input [4:1] JA, //slaveMasterController master input signals
+    input JA_attack,//slaveMasterController master input signals
+    output [4:1] JXADC, //slaveMasterController slave output signals
+    output JXADC_attack,//slaveMasterController slave output signals
     output [7:0] JC,
     output [15:0] led,
     output [6:0] seg,
@@ -57,7 +61,25 @@ module Top_Student (
     wire player2RightBtn;
     wire player2AttackBtn;
     
-    
+    slaveMasterSetter myOppressor (.isMaster(sw[1]), .clk(clk), 
+        .btnU(btnU), .btnD(btnD), .btnL(btnL), .btnR(btnR), .btnC(btnC)
+        
+        //Master inputs:
+        ,.input_player2UpBtn(JA[1]), .input_player2DownBtn(JA[2]), .input_player2LeftBtn(JA[3]), .input_player2RightBtn(JA[4]),
+        .input_player2AttackBtn(JA_attack),
+        .player2UpBtn(player2UpBtn), .player2DownBtn(player2DownBtn), .player2LeftBtn(player2LeftBtn), .player2RightBtn(player2RightBtn), 
+        .player2AttackBtn(player2AttackBtn)
+        
+        //Slave outputs:
+        ,.slaveOut_player2UpBtn(JXADC[1]), .slaveOut_player2DownBtn(JXADC[2]), .slaveOut_player2LeftBtn(JXADC[3]), .slaveOut_player2RightBtn(JXADC[4]),
+        .slaveOut_player2AttackBtn(JXADC_attack)
+        );
+        
+        assign led[10] = player2UpBtn;
+        assign led[11] = player2LeftBtn;
+        assign led[12] = player2RightBtn;
+        assign led[13] = player2AttackBtn;
+
     //player 2 inputs
     wire player2CharChoice; //3 bit value, can ignore for now if we dont have more char choices
     wire player2IsCrouched;

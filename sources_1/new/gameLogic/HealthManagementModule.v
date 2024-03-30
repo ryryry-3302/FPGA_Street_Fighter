@@ -1,6 +1,6 @@
 //, input damageTo1, input damageTo2, 
 
-module HealthManagement (input clk,input reset, input player_1_hitrangewire, input [1:0] attack_statex, input [1:0] attack_statey, output reg [8:0]health_1=200, output reg [8:0] health_2 =200, output reg [2:0]state);
+module HealthManagement (input clk,input reset, input player_1_hitrangewire, input [1:0] attack_statex, input [1:0] attack_statey, output reg [8:0]health_1=400, output reg [8:0] health_2 =400, output reg [2:0]state);
     
 //state 00 fight
 //state 01 player 1 wins

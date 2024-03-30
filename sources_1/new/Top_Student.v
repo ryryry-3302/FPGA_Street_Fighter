@@ -29,7 +29,7 @@ module Top_Student (
     wire CLK_20Hz; //the master TPS clock
     
     wire player1BOT; wire player2BOT;
-    assign player1BOT = ~winner[0] || ~winner[1]?sw[8]:0; assign player2BOT = ~winner[0]||~winner[1]?sw[7]:0;
+    assign player1BOT = ~winner[0] && ~winner[1]?sw[8]:0; assign player2BOT = ~winner[0]&&~winner[1]?sw[7]:0;
     
     wire [4:0]random5bitValue1; //our random value. seed is built into the module | ranges from 0 to 31 (inclusive)
     wire [4:0]random5bitValue2; //our random value. seed is built into the module | ranges from 0 to 31 (inclusive) 
@@ -183,7 +183,7 @@ module Top_Student (
         reset_cond <= (timer >= 40) ? 1 : 0;
     end
 
-    PhysicsEngine PhysicsEngine1(.velocityUp(led[7:0]),.player_no(0),.clk(CLK_20Hz),.reset(reset_cond),.isColliding(player1isColliding),.movingLeft(player1movingLeft),.movingRight(player1movingRight),.isJumping(player1Jumping),.sprite_x_out(sprite1_x_out),.sprite_y_out( sprite1_y_out), .sprite2_x(sprite2_x_out),.sprite2_y(sprite2_y_out));
+    PhysicsEngine PhysicsEngine1(.velocityUp(0),.player_no(0),.clk(CLK_20Hz),.reset(reset_cond),.isColliding(player1isColliding),.movingLeft(player1movingLeft),.movingRight(player1movingRight),.isJumping(player1Jumping),.sprite_x_out(sprite1_x_out),.sprite_y_out( sprite1_y_out), .sprite2_x(sprite2_x_out),.sprite2_y(sprite2_y_out));
     PhysicsEngine PhysicsEngine2(.velocityUp(0),.player_no(1),.clk(CLK_20Hz),.reset(reset_cond),.isColliding(player2isColliding),.movingLeft(player2movingLeft),.movingRight(player2movingRight),.isJumping(player2Jumping),.sprite_x_out(sprite2_x_out),.sprite_y_out( sprite2_y_out), .sprite2_x(sprite1_x_out),.sprite2_y(sprite1_y_out));
     
     

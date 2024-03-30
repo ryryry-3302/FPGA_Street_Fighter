@@ -3,11 +3,11 @@ module health_bar(
     input [8:0] curr_health,
     input [12:0] pixel_index,
     output reg [15:0] oled_colour,
-    output reg [8:0] prev_health = 200
+    output reg [8:0] prev_health = 400
 );
 
     //Value
-    parameter FULL_HEALTH = 200;    
+    parameter FULL_HEALTH = 400;    
 
     //Coords
     parameter X_HEALTH_START = 55;

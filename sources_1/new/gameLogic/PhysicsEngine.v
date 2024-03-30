@@ -31,7 +31,7 @@ module PhysicsEngine (
     input isJumping,
     input [6:0] sprite2_x,
     input [6:0] sprite2_y,
-    output reg [6:0] sprite_x_out = 30,
+    output reg [6:0] sprite_x_out = player_no?75:15,
     output reg [6:0] sprite_y_out = 48
 );
 

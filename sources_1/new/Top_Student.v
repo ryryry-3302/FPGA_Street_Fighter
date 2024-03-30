@@ -25,7 +25,7 @@ module Top_Student (
     wire CLK_20Hz; //the master TPS clock
     
     wire player1BOT; wire player2BOT;
-    assign player1BOT = sw[8]; assign player2BOT = sw[7];
+    assign player1BOT = ~winner[0] || ~winner[1]?sw[8]:0; assign player2BOT = ~winner[0]||~winner[1]?sw[7]:0;
     
     wire [4:0]random5bitValue1; //our random value. seed is built into the module | ranges from 0 to 31 (inclusive)
     wire [4:0]random5bitValue2; //our random value. seed is built into the module | ranges from 0 to 31 (inclusive) 

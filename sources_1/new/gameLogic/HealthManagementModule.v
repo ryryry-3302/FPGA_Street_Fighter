@@ -10,13 +10,13 @@ module HealthManagement (input clk,input reset, input player_1_hitrangewire, inp
 
   always @(posedge clk)begin
        if (reset)begin
-          health_2 <= 200;
-          health_1 <= 200;
+          health_2 <= 400;
+          health_1 <= 400;
           state <= 2'b00;
        end
        
        if (player_1_hitrangewire && attack_statex == 2'b11 && health_2>0 && state == 2'b00)begin
-                     health_2 <= (health_2 > 40)? health_2 - 40:0;
+                     health_2 <= (health_2 > 20)? health_2 - 20:0;
               end
        else if (player_1_hitrangewire && attack_statex == 2'b10 && health_2>0 && state == 2'b00)begin
                             health_2 <= health_2 > 10? health_2 -10: 0;
@@ -28,7 +28,7 @@ module HealthManagement (input clk,input reset, input player_1_hitrangewire, inp
        
 
        if (player_1_hitrangewire && attack_statey == 2'b11 && health_1>0 && state == 2'b00)begin
-                     health_1 <= (health_1 > 40)? health_1 - 40:0;
+                     health_1 <= (health_1 > 20)? health_1 - 20:0;
               end
        else if (player_1_hitrangewire && attack_statey == 2'b10 && health_1>0 && state == 2'b00)begin
                             health_1 <= health_1 > 10? health_1 -10: 0;

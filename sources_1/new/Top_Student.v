@@ -203,7 +203,6 @@ module Top_Student (
 
 
     //Menu using 7 Seg Displays -------------------------
-    //do i need a way to have no result? (winner = 11)
     assign dp = 1; //Keep it off
     wire [15:0] menu_col;
 

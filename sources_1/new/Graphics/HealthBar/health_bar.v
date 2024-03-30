@@ -25,9 +25,12 @@ module health_bar(
     parameter COLOUR_WHITE    = 16'hFFFF;
     
 
+    //Having a variable clock would be cool!
     always@(posedge health_drop_clk)
     begin
-        if( (prev_health > curr_health) && (prev_health > 0) )
+        if(prev_health==200 && curr_health==0)
+            prev_health = 0; //Avoid animation at game beginning
+        else if( (prev_health > curr_health) && (prev_health > 0) )
             prev_health = prev_health - 1;
         else if(prev_health < curr_health)
             prev_health = curr_health;

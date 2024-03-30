@@ -1,6 +1,10 @@
 //, input damageTo1, input damageTo2, 
 
-module HealthManagement (input clk,input reset, input player_1_hitrangewire, input [1:0] attack_statex, input [1:0] attack_statey, output reg [8:0]health_1=200, output reg [8:0] health_2 =200, output reg [2:0]state);
+module HealthManagement (input clk, input reset,
+                         input player_1_hitrangewire, 
+                         input [1:0] attack_statex, input [1:0] attack_statey,
+                         output reg [8:0] health_1 = 0, output reg [8:0] health_2 = 0, 
+                         output reg [2:0] state);
     
 //state 00 fight
 //state 01 player 1 wins
@@ -31,17 +35,15 @@ module HealthManagement (input clk,input reset, input player_1_hitrangewire, inp
        if (player_1_hitrangewire && attack_statey && health_1>0)begin
              health_1 <= health_1 -1;
        end
-        
-       if(health_2 == 0)begin
-            state <= 2'b01;
-       end
-       else if(health_1 == 0)begin
-            state <= 2'b10;
-       end
-       else begin
-            state <= 2'b00;
 
-       end
+       if(health_1==0 && health_2==0) //Game just started
+          state <= 2'b11; 
+       else if(health_2 == 0)
+          state <= 2'b01;
+       else if(health_1 == 0)
+          state <= 2'b10;
+       else 
+          state <= 2'b00;
        
                        
    end

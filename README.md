@@ -37,15 +37,18 @@ Development of a FPGA Street Fighter Game
 - led[7:6] = player 2 comboMove  //0 means not attacking, 1 means nornmal attack, 2 means special attack, 3 means super attack
 - led[9:8] = player 1 comboMove 
 
-### menu
+### Menu
 
 The menu takes input from the game state to display results on the 7 segment oled and oled display
 
-- Fight in progress: "----" shown on the 7 segment display
-- Player 1 wins: "WIN " shown on the 7 segment display with a **green** rectangle on the screen
-- Player 2 wins: "LOSE" shown on the 7 segment display with a **red** rectangle on the screen 
+| Game State             | 7 Segment Display | Screen Rectangle Color |
+|------------------------|-------------------|------------------------|
+| Game Beginning         | "0000"            | White                  |
+| Fight in progress      | "----"            | -                      |
+| Player 1 wins          | "WIN "            | Green                  |
+| Player 2 wins          | "LOSE"            | Red                    |
 
-To reset the game **AFTER** a player has won and the display is shown, hold down **btnC** for 2s, and the game should reset.
+To reset the game **AFTER** a player has won, or at the beginning of the game, hold down **btnC** for 2s, and the game should reset.
 
 If you want to force reset the game on your own, leave sw[0] on for at least 2s to reset the game even if the fight is still in progress.
 

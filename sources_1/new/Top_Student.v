@@ -153,7 +153,7 @@ module Top_Student (
     reg [5:0] timer = 0;
     always@(posedge CLK_20Hz)
     begin
-        if((btnC && (winner == 2'b01 || winner == 2'b10) ) || sw[0] )
+        if((btnC && (winner != 2'b00) ) || sw[0] )
             timer <= timer + 1;
         else
             timer <= 0;

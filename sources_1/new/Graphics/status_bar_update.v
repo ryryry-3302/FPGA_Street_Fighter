@@ -16,7 +16,7 @@ module status_bar_update(
 
     wire CLOCK_ANIMATE;                    
     CustomClock clk20hz(.CLOCK_IN(clk),
-                        .COUNT_STOP(32'd2_500_000 - 1),
+                        .COUNT_STOP(32'd2_500 - 1),
                         .CLOCK_OUT(CLOCK_ANIMATE));
 
     wire [15:0] hb_right_col;

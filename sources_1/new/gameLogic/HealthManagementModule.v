@@ -14,18 +14,19 @@ module HealthManagement (input clk, input reset,
 
   always @(posedge clk)begin
        if (reset)begin
-            health_2 <= 200;
-            health_1 <= 200;
+          health_2 <= 400;
+          health_1 <= 400;
+          state <= 2'b00;
        end
        
-       if (player_1_hitrangewire && attack_statex == 2'b11 && health_2>0)begin
-                     health_2 <= (health_2 > 40)? health_2 - 40:0;
+       if (player_1_hitrangewire && attack_statex == 2'b11 && health_2>0 && state == 2'b00)begin
+                     health_2 <= (health_2 > 20)? health_2 - 20:0;
               end
-       else if (player_1_hitrangewire && attack_statex == 2'b10 && health_2>0)begin
+       else if (player_1_hitrangewire && attack_statex == 2'b10 && health_2>0 && state == 2'b00)begin
                             health_2 <= health_2 > 10? health_2 -10: 0;
                      end
        
-       else if (player_1_hitrangewire && attack_statex == 2'b01 && health_2>0)begin
+       else if (player_1_hitrangewire && attack_statex == 2'b01 && health_2>0 && state == 2'b00)begin
               health_2 <= health_2 -4;
        end
        

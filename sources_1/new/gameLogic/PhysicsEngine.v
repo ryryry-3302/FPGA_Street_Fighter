@@ -31,7 +31,7 @@ module PhysicsEngine (
     input isJumping,
     input [6:0] sprite2_x,
     input [6:0] sprite2_y,
-    output reg [6:0] sprite_x_out = 30,
+    output reg [6:0] sprite_x_out = player_no?75:15,
     output reg [6:0] sprite_y_out = 48
 );
 
@@ -96,7 +96,7 @@ module PhysicsEngine (
             
             else  begin
                 velocity_y_up <= velocity_y_up >0? velocity_y_up -1 : 0;
-                velocity_y_down <= velocity_y_down <15 && velocity_y_down >0? velocity_y_down +1 : 0;
+                velocity_y_down <= velocity_y_down <15 && velocity_y_down >0 || sprite_y_out <48? velocity_y_down +1 : 0;
                 sprite_y_out <= (sprite_y_out - velocity_y_up + velocity_y_down)<=48?(sprite_y_out - velocity_y_up + velocity_y_down): 48; 
             end
       

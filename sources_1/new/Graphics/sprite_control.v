@@ -154,6 +154,8 @@ module sprite_control (
                 2'b11: oled_colour = Gui_def_state;                      
                 endcase
             end
+        else
+            oled_colour = Gui_def_state;
         /*    
         else if (character_state == STATE_INJURED)
                 begin

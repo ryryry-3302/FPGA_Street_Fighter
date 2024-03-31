@@ -4,7 +4,7 @@ module HealthManagement (input clk, input reset,
                          input player_1_hitrangewire, 
                          input [1:0] attack_statex, input [1:0] attack_statey,
                          output reg [8:0] health_1 = 0, output reg [8:0] health_2 = 0, 
-                         output reg [2:0] state,output reg hit1 = 0, output reg hit2 = 0);
+                         output reg [2:0] state,output reg hit1 = 0, output reg hit2 = 0,input bullethit1, input bullethit2);
     
 //state 00 fight
 //state 01 player 1 wins
@@ -15,7 +15,7 @@ module HealthManagement (input clk, input reset,
   //add invincibility below`
     
 
-  always @(posedge clk)begin
+  always @(posedge clk || bullethit1 ||  bullethit2)begin
        if (reset)begin
           health_2 <= 400;
           health_1 <= 400;
@@ -23,7 +23,7 @@ module HealthManagement (input clk, input reset,
           
        end
        
-       if (player_1_hitrangewire && attack_statex == 2'b11 && health_2>0 && state == 2'b00)begin
+       if (bullethit2 && health_2>0 && state == 2'b00)begin
                     
                      health_2 <= (health_2 > 20)? health_2 - 20:0;
                     hit2 <= 1;
@@ -49,7 +49,7 @@ module HealthManagement (input clk, input reset,
        
        
        
-       if (player_1_hitrangewire && attack_statey == 2'b11 && health_1>0 && state == 2'b00)begin
+       if (bullethit1 && health_1>0 && state == 2'b00)begin
                      health_1 <= (health_1 > 40)? health_1 - 20:0;
                                          hit1 <= 1;
 

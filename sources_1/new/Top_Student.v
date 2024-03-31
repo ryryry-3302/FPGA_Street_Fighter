@@ -205,7 +205,7 @@ module Top_Student (
     HealthManagement HealthManagement(.clk(CLK_20Hz),.reset(reset_cond),
                      .player_1_hitrangewire(player_1_hitrangewire),
                      .attack_statex(player1ComboMove),.attack_statey(player2ComboMove),
-                     .health_1(health_1),.health_2(health_2), .state(winner),.hit1(player1IsStunned),.hit2(player2IsStunned));
+                     .health_1(health_1),.health_2(health_2), .state(winner),.hit1(player1IsStunned),.hit2(player2IsStunned),.bullethit1(bullethit1),.bullethit2(bullethit2));
 
     assign led[2:1] = winner;
     //------------------------------------------------
@@ -284,6 +284,7 @@ module Top_Student (
     wire [15:0] bullet_col_1;
     wire [6:0] bullet_x1; wire [6:0] bullet_y1;
     wire bullet_en1;
+    wire bullethit2;
     bullet bul(.clk(clk),.attack_state(player1ComboMove[1:0]),
                 .mirrored(~sprite1_facing_right),
                 .player_1x(sprite1_x_out), .player_1y(sprite1_y_out),
@@ -291,8 +292,8 @@ module Top_Student (
                 .pixel_index(pixel_index), .random_5bit_val(random5bitValue1),
                 .bullet_x(bullet_x1), .bullet_y(bullet_y1),
                 .bullet_en(bullet_en1),
-                .oled_colour(bullet_col_1));
-
+                .oled_colour(bullet_col_1),.playerhit(bullethit2));
+    wire bullethit1;
     wire [15:0] bullet_col_2;
     wire [6:0] bullet_x2; wire [6:0] bullet_y2;
     wire bullet_en2;
@@ -303,7 +304,7 @@ module Top_Student (
                 .pixel_index(pixel_index), .random_5bit_val(random5bitValue2),
                 .bullet_x(bullet_x2), .bullet_y(bullet_y2),
                 .bullet_en(bullet_en2),
-                .oled_colour(bullet_col_2));                
+                .oled_colour(bullet_col_2),.playerhit(bullethit1));                
 
 
     // Oled colour mux -------------------------------------------

@@ -15,7 +15,7 @@ module sprite_control (
 
     wire clk_8hz;
     CustomClock clk8hz(.CLOCK_IN(clk),
-                        .COUNT_STOP(32'd6_250_000 - 1),
+                        .COUNT_STOP(32'd4_500_000 - 1),
                         .CLOCK_OUT(clk_8hz));                                                         
     
 
@@ -97,7 +97,7 @@ module sprite_control (
 
     // Getting Hit State -----------------------------------------------  
     //Reverse the order cause module named wrongly
-    /*
+    
     reg [1:0] sprite_inj = 2'b00;
     parameter STATE_INJURED = 3'b100;
     wire [15:0] Gui_i1_col; Gui_Inj3 gi1(translated_pixel_index,Gui_i1_col);
@@ -111,7 +111,7 @@ module sprite_control (
         else
             sprite_inj = (sprite_inj >= 2'b10) ? 2'b11 : sprite_inj + 1;
     end 
-    */
+    
     //------------------------------------------------------------------------------    
     
     /*
@@ -150,9 +150,8 @@ module sprite_control (
                 default: oled_colour = Gui_def_state;                      
                 endcase
             end
-        else
-            oled_colour = Gui_def_state;
-        /*    
+            
+   
         else if (character_state == STATE_INJURED)
                 begin
                     case(sprite_inj)
@@ -162,7 +161,10 @@ module sprite_control (
                     2'b11: oled_colour = Gui_def_state;
                     endcase                
                 end
-         */                    
+         
+        else
+            oled_colour = Gui_def_state;
+                        
         //----------------------------------        
         
         //Color transform for diff sprite for non black

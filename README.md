@@ -23,7 +23,11 @@ Development of a FPGA Street Fighter Game
 | btnL                     | Move Left      |
 | btnU                     | Jump Up        |
 | btnL > btnD > btnR > btnC | Special Combo |
+| U > D > L > R > L >R     | Super Special  Combo |
 
+For the super special combo, a bullet of random colour should shoot from the sprite. When it hits the enemy, the bullet will disapear.
+
+**CURRENT PROBLEM** for some reason when the sprite jumps, the y value of the bullet will change which is not ideal. Refer to [bullet.v documentation](./sources_1/new/Graphics/README.md/#bullet)
 
 ### Switch mappings
 - sw[0] reset players positions to start and reset hp to full

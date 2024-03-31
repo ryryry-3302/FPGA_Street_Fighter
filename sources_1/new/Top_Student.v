@@ -281,6 +281,31 @@ module Top_Student (
                                   
     //------------------------------------------------  
 
+    //Bullet
+    wire [15:0] bullet_col_1;
+    wire [6:0] bullet_x1; wire [6:0] bullet_y1;
+    wire bullet_en1;
+    bullet bul(.clk(clk),.attack_state(player1ComboMove[1:0]),
+                .mirrored(~sprite1_facing_right),
+                .player_1x(sprite1_x_out), .player_1y(sprite1_y_out),
+                .player_2x(sprite2_x_out), .player_2y(sprite2_y_out),
+                .pixel_index(pixel_index), .random_5bit_val(random5bitValue1),
+                .bullet_x(bullet_x1), .bullet_y(bullet_y1),
+                .bullet_en(bullet_en1),
+                .oled_colour(bullet_col_1));
+
+    wire [15:0] bullet_col_2;
+    wire [6:0] bullet_x2; wire [6:0] bullet_y2;
+    wire bullet_en2;
+    bullet bu2(.clk(clk),.attack_state(player2ComboMove[1:0]),
+                .mirrored(sprite1_facing_right),
+                .player_1x(sprite2_x_out), .player_1y(sprite2_y_out),
+                .player_2x(sprite1_x_out), .player_2y(sprite1_y_out),
+                .pixel_index(pixel_index), .random_5bit_val(random5bitValue2),
+                .bullet_x(bullet_x2), .bullet_y(bullet_y2),
+                .bullet_en(bullet_en2),
+                .oled_colour(bullet_col_2));                
+
 
     // Oled colour mux -------------------------------------------
     parameter COLOUR_BLACK = 16'h0000;    
@@ -290,6 +315,10 @@ module Top_Student (
                 oled_colour = menu_col;
             else if(status_bar_col != COLOUR_BLACK)
                 oled_colour = status_bar_col;
+            else if(bullet_col_1 != COLOUR_BLACK)
+                oled_colour = bullet_col_1;
+            else if(bullet_col_2 != COLOUR_BLACK)
+                    oled_colour = bullet_col_2;                
             else if(sprite_2_col != COLOUR_BLACK)
                 oled_colour = sprite_2_col;
             else if(sprite_1_col != COLOUR_BLACK)

@@ -8,6 +8,7 @@ Current sprite used is Guile.
 ### Modules Within the Folder
 These modules should be used in `Top_Student.v`
 
+- [bullet](#bullet)
 - [status_bar_update](#status_bar_update)
 - [sprite_control](#sprite_control)
 - [background_control](#background_control)
@@ -25,6 +26,34 @@ These modules should be used in `Top_Student.v`
 - Health bar (KO bar) with dropping health animation. Reset health bar available.
 
 ## Documentation
+
+### bullet
+Shoots out a bullet each time the special combo is done.
+
+```verilog
+module bullet(
+    input clk,
+    input [1:0] attack_state,
+    input mirrored,
+    input [6:0] player_1x,
+    input [6:0] player_1y,
+    input [6:0] player_2x,
+    input [6:0] player_2y,
+    input [12:0] pixel_index,
+    input [4:0] random_5bit_val,
+
+    output reg [6:0] bullet_x = 0,
+    output reg [6:0] bullet_y = 0,
+    output reg bullet_en = 0,
+    output reg [15:0] oled_colour
+);  
+```
+`player_1` refers to the player throwing the bullet while `player_2` is the enemy that the bullet will head towards. `Mirrored` is used to determine the direction of the bullet.
+
+`random_5bit_val` is taken from the `LSFSRrandom.v`. It is used to randommize the colour of the bullet coming out.
+
+**CURRENT PROBLEM** for some reason when the sprite jumps, the y value of the bullet will change which is not ideal.
+
 
 ### status_bar_update
 Updates the top KO/Status bar based on the current health of both sprites. Animation to show health dropping towards the current value has been implemented. To reset the health bar, write the desired heatlh value to `curr_health_l` and/or `curr_health_r`.
@@ -87,7 +116,7 @@ Note that `move_state` animations will only show if `character_state` is set to 
 | 3'b000                          | Not attacking           |   Y   | 
 | 3'b001                          | Normal attack           |   Y   | 
 | 3'b010                          | Special attack          |   Y   | 
-| 3'b011                          | Super special attack    |       | 
+| 3'b011                          | Super special attack    |   Y   | 
 | 3'b100                          | Got hit/injured         |   Y   | 
 
 NOTE: For attacks and getting injured, `character_state` is read. If it changes, the animation runs to the end, and does not reset unless `character_state` changes. This is to ensure that animations are run for only one hit.

@@ -31,7 +31,7 @@ module PhysicsEngine (
     input isJumping,
     input [6:0] sprite2_x,
     input [6:0] sprite2_y,
-    output reg [6:0] sprite_x_out = player_no?75:15,
+    output reg [6:0] sprite_x_out = player_no?67:20,
     output reg [6:0] sprite_y_out = 48
 );
 
@@ -47,11 +47,11 @@ module PhysicsEngine (
         if (reset) begin
             case (player_no)
                 0: begin
-                    sprite_x_out <= 15; // left end
+                    sprite_x_out <= 20; // left end
                     sprite_y_out <= 48; // 48 is the floor
                 end
                 1: begin
-                    sprite_x_out <= 75; // right end
+                    sprite_x_out <= 67; // right end
                     sprite_y_out <= 48; // 48 is the floor
                 end             
                 default: 
@@ -63,10 +63,10 @@ module PhysicsEngine (
         end
         
         else begin
-            if (movingLeft && sprite_x_out > 17 && ~(isColliding && sprite_x_out> sprite2_x )) begin // && ~isColliding
+            if (movingLeft && sprite_x_out > 20 && ~(isColliding && sprite_x_out> sprite2_x )) begin // && ~isColliding
                 sprite_x_out <= sprite_x_out - 2;
             end
-            if (movingRight && sprite_x_out < 73 &&  ~(isColliding && sprite_x_out < sprite2_x)) begin // && ~isColliding
+            if (movingRight && sprite_x_out < 67 &&  ~(isColliding && sprite_x_out < sprite2_x)) begin // && ~isColliding
                 sprite_x_out <= sprite_x_out + 2;
             end
             

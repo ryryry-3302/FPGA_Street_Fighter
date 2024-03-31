@@ -162,7 +162,7 @@ module sprite_control (
                     2'b11: oled_colour = Gui_def_state;
                     endcase                
                 end
-        */                        
+         */                    
         //----------------------------------        
         
         //Color transform for diff sprite for non black

@@ -99,7 +99,7 @@ module sprite_control (
 
     // Getting Hit State -----------------------------------------------  
     //Reverse the order cause module named wrongly
-    /*
+    
     reg [1:0] sprite_inj = 2'b00;
     parameter STATE_INJURED = 3'b100;
     wire [15:0] Gui_i1_col; Gui_Inj3 gi1(translated_pixel_index,Gui_i1_col);
@@ -111,9 +111,9 @@ module sprite_control (
         if(character_state != STATE_INJURED)
             sprite_inj = 2'b00;
         else
-            sprite_inj = (sprite_inj >= 2'b10) ? 2'b11 : sprite_inj + 1;
+            sprite_inj = (sprite_inj >= 2'b10) ? 2'b00 : sprite_inj + 1;
     end 
-    */
+    
     //------------------------------------------------------------------------------    
     
     /*
@@ -154,7 +154,7 @@ module sprite_control (
                 2'b11: oled_colour = Gui_def_state;                      
                 endcase
             end
-        /*    
+           
         else if (character_state == STATE_INJURED)
                 begin
                     case(sprite_inj)
@@ -164,7 +164,7 @@ module sprite_control (
                     2'b11: oled_colour = Gui_def_state;
                     endcase                
                 end
-        */                        
+                               
         //----------------------------------        
         
         //Color transform for diff sprite for non black

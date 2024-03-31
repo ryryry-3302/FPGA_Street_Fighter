@@ -27,16 +27,22 @@ module HealthManagement (input clk, input reset,
                      end
        
        else if (player_1_hitrangewire && attack_statex == 2'b01 && health_2>0 && state == 2'b00)begin
-              health_2 <= health_2 -4;
+              health_2 <= health_2>4?health_2 -4:0;
        end
        
        
        
-       
-       if (player_1_hitrangewire && attack_statey && health_1>0)begin
-             health_1 <= health_1 -1;
-       end
+       if (player_1_hitrangewire && attack_statey == 2'b11 && health_1>0 && state == 2'b00)begin
+                     health_1 <= (health_1 > 40)? health_1 - 20:0;
+              end
+       else if (player_1_hitrangewire && attack_statey == 2'b10 && health_1>0 && state == 2'b00)begin
+                            health_1 <= health_1 > 10? health_1 -10: 0;
+                     end
 
+       else if (player_1_hitrangewire && attack_statey == 2'b01 && health_1>0 && state == 2'b00)begin
+              health_1 <= health_1 > 4? health_1 -4:0;
+       end
+       
        if(health_1==0 && health_2==0) //Game just started
           state <= 2'b11; 
        else if(health_2 == 0)

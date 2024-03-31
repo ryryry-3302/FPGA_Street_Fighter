@@ -63,10 +63,10 @@ module PhysicsEngine (
         end
         
         else begin
-            if (movingLeft && sprite_x_out > 15 && ~(isColliding && sprite_x_out> sprite2_x )) begin // && ~isColliding
+            if (movingLeft && sprite_x_out > 17 && ~(isColliding && sprite_x_out> sprite2_x )) begin // && ~isColliding
                 sprite_x_out <= sprite_x_out - 2;
             end
-            if (movingRight && sprite_x_out < 75 &&  ~(isColliding && sprite_x_out < sprite2_x)) begin // && ~isColliding
+            if (movingRight && sprite_x_out < 73 &&  ~(isColliding && sprite_x_out < sprite2_x)) begin // && ~isColliding
                 sprite_x_out <= sprite_x_out + 2;
             end
             
@@ -76,9 +76,9 @@ module PhysicsEngine (
                             velocity_y_down <= 1;
             end
             else if (isJumping &&( (sprite_y_out == 48))) begin
-                velocity_y_up <= 14;
+                velocity_y_up <= 13;
                 velocity_y_down <= 2;
-                sprite_y_out <= sprite_y_out - velocity_y_up + velocity_y_down;
+                sprite_y_out <= sprite_y_out - 13 + 2;
             end
            
             
@@ -88,8 +88,8 @@ module PhysicsEngine (
             velocity_y_down <= 0;
             end
              
-            else if (sprite_y_out <= 14) begin
-                sprite_y_out <= 15;
+            else if (sprite_y_out <= 16) begin
+                sprite_y_out <= 17;
                 velocity_y_up <= 0;
                 velocity_y_down <= 1;
             end

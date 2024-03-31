@@ -76,9 +76,9 @@ module PhysicsEngine (
                             velocity_y_down <= 1;
             end
             else if (isJumping &&( (sprite_y_out == 48))) begin
-                velocity_y_up <= 13;
+                velocity_y_up <= 11;
                 velocity_y_down <= 2;
-                sprite_y_out <= sprite_y_out - 13 + 2;
+                sprite_y_out <= sprite_y_out - 11 + 2;
             end
            
             
@@ -88,8 +88,8 @@ module PhysicsEngine (
             velocity_y_down <= 0;
             end
              
-            else if (sprite_y_out <= 16) begin
-                sprite_y_out <= 17;
+            else if (sprite_y_out <= 18) begin
+                sprite_y_out <= 19;
                 velocity_y_up <= 0;
                 velocity_y_down <= 1;
             end

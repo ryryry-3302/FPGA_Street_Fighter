@@ -71,7 +71,7 @@ module sprite_control (
         if(character_state != STATE_PUNCH)
             sprite_punch = 2'b00;
         else
-            sprite_punch = (sprite_punch >= 2'b10) ? 2'b11 : sprite_punch + 1;
+            sprite_punch = (sprite_punch >= 2'b10) ? 2'b00 : sprite_punch + 1;
     end
 
     wire [15:0] Gui_def_state;

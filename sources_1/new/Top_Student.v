@@ -26,6 +26,7 @@ module Top_Student (
     output dp
 );
 
+
     wire CLK_20Hz; //the master TPS clock
     
     wire player1BOT; wire player2BOT;
@@ -199,6 +200,8 @@ module Top_Student (
     //Hp management----------------------------------
     wire [8:0] health_1;
     wire [8:0] health_2;
+    
+
     HealthManagement HealthManagement(.clk(CLK_20Hz),.reset(reset_cond),
                      .player_1_hitrangewire(player_1_hitrangewire),
                      .attack_statex(player1ComboMove),.attack_statey(player2ComboMove),

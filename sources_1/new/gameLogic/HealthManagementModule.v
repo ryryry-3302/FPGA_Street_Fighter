@@ -9,7 +9,28 @@ module HealthManagement (input clk, input reset,
 //state 00 fight
 //state 01 player 1 wins
 //state 02 player 2 wins
-      
+  reg hit1 = 0;    
+  reg [2:0] immunity_frames1 =0;
+  reg hit2 = 0;    
+  reg [2:0] immunity_frames2 =0;
+  always@(posedge clk)begin
+    if(hit1 && immunity_frames1 < 7)begin
+        immunity_frames1 <= immunity_frames1 + 1;
+    end
+    else begin
+        immunity_frames1 <= 0;
+        hit1 <= 0;
+    end
+    if(hit2 && immunity_frames2 < 7)begin
+        immunity_frames2 <= immunity_frames2 + 1;
+    end
+    else begin
+        immunity_frames2 <= 0;
+        hit1 <= 0;
+    end
+  
+  end
+  //add invincibility below`
     
 
   always @(posedge clk)begin
@@ -17,30 +38,41 @@ module HealthManagement (input clk, input reset,
           health_2 <= 400;
           health_1 <= 400;
           state <= 2'b00;
+          immunity_frames1 <= 0;
+          hit1 <= 0;
+          immunity_frames2 <= 0;
+          hit2 <= 0;
        end
        
-       if (player_1_hitrangewire && attack_statex == 2'b11 && health_2>0 && state == 2'b00)begin
+       if (immunity_frames2 == 0 && player_1_hitrangewire && attack_statex == 2'b11 && health_2>0 && state == 2'b00)begin
+                    
                      health_2 <= (health_2 > 20)? health_2 - 20:0;
+                     hit2 <= 1;
               end
-       else if (player_1_hitrangewire && attack_statex == 2'b10 && health_2>0 && state == 2'b00)begin
+       else if (immunity_frames2 == 0 && player_1_hitrangewire && attack_statex == 2'b10 && health_2>0 && state == 2'b00)begin
                             health_2 <= health_2 > 10? health_2 -10: 0;
+                            hit2 <= 1;
                      end
        
-       else if (player_1_hitrangewire && attack_statex == 2'b01 && health_2>0 && state == 2'b00)begin
+       else if ( immunity_frames2 == 0 && player_1_hitrangewire && attack_statex == 2'b01 && health_2>0 && state == 2'b00)begin
               health_2 <= health_2>4?health_2 -4:0;
+              hit2 <= 1;
        end
        
        
        
-       if (player_1_hitrangewire && attack_statey == 2'b11 && health_1>0 && state == 2'b00)begin
+       if (immunity_frames1 == 0 && player_1_hitrangewire && attack_statey == 2'b11 && health_1>0 && state == 2'b00)begin
                      health_1 <= (health_1 > 40)? health_1 - 20:0;
+                     hit1 <= 1;
               end
-       else if (player_1_hitrangewire && attack_statey == 2'b10 && health_1>0 && state == 2'b00)begin
+       else if (immunity_frames1 == 0 && player_1_hitrangewire && attack_statey == 2'b10 && health_1>0 && state == 2'b00)begin
                             health_1 <= health_1 > 10? health_1 -10: 0;
+                            hit1 <= 1;
                      end
 
-       else if (player_1_hitrangewire && attack_statey == 2'b01 && health_1>0 && state == 2'b00)begin
+       else if (immunity_frames1 == 0 && player_1_hitrangewire && attack_statey == 2'b01 && health_1>0 && state == 2'b00)begin
               health_1 <= health_1 > 4? health_1 -4:0;
+              hit1 <= 1;
        end
        
        if(health_1==0 && health_2==0) //Game just started

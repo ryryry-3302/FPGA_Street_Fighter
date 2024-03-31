@@ -282,20 +282,21 @@ module Top_Student (
     //------------------------------------------------  
 
 
-    // Oled colour mux -------------------------------------------    
+    // Oled colour mux -------------------------------------------
+    parameter COLOUR_BLACK = 16'h0000;    
         always@(pixel_index)
         begin
-            if(menu_col != 16'b0000)
+            if(menu_col != COLOUR_BLACK)
                 oled_colour = menu_col;
-            else if(status_bar_col != 16'h0000)
+            else if(status_bar_col != COLOUR_BLACK)
                 oled_colour = status_bar_col;
-            else if(sprite_2_col != 16'h0000)
+            else if(sprite_2_col != COLOUR_BLACK)
                 oled_colour = sprite_2_col;
-            else if(sprite_1_col != 16'h0000)
+            else if(sprite_1_col != COLOUR_BLACK)
                 oled_colour = sprite_1_col;           
             else
                 oled_colour = background_color;
-                //oled_colour = 16'h0000;
+                //oled_colour = COLOUR_BLACK;
         end
    //------------------------------------------------  
 

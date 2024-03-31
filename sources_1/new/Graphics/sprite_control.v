@@ -62,36 +62,34 @@ module sprite_control (
     // Normal Attack State -------------------------------------------------------- 
     reg [1:0] sprite_punch = 2'b00;
     parameter STATE_PUNCH = 3'b001;
-    wire [15:0] Gui_p1_col; Gui_Punch1 gp1(translated_pixel_index,Gui_p1_col);
-    wire [15:0] Gui_p2_col; Gui_Punch2 gp2(translated_pixel_index,Gui_p2_col);   
-    wire [15:0] Gui_p3_col; Gui_Punch3 gp3(translated_pixel_index,Gui_p3_col);              
+    wire [15:0] Gui_p1_col; Gui_Punch1 gp1(translated_pixel_index,Gui_p1_col); 
+    wire [15:0] Gui_p2_col; Gui_Punch2 gp2(translated_pixel_index,Gui_p2_col);            
 
     always@(posedge clk_8hz)
     begin
         if(character_state != STATE_PUNCH)
             sprite_punch = 2'b00;
         else
-            sprite_punch = (sprite_punch >= 2'b10) ? 2'b00 : sprite_punch + 1;
+            sprite_punch = (sprite_punch >= 2'b01) ? 2'b00 : sprite_punch + 1; //Repeated punches are possible
     end
 
     wire [15:0] Gui_def_state;
-    assign Gui_def_state = Gui_p1_col; //Perhaps change to static animation
+    assign Gui_def_state = Gui_p1_col;
     //------------------------------------------------------------------------------   
 
-    // Combo Attack State -------------------------------------------------------- \
+    // Combo Attack State -------------------------------------------------------- 
     // To implement bullet if possible
     reg [1:0] sprite_sp = 2'b00;
     parameter STATE_SP_0 = 3'b010;
-    wire [15:0] Gui_sp1_col; Gui_Sp1 gsp1(translated_pixel_index,Gui_sp1_col);
-    wire [15:0] Gui_sp2_col; Gui_Sp2 gsp2(translated_pixel_index,Gui_sp2_col);   
-    wire [15:0] Gui_sp3_col; Gui_Sp3 gsp3(translated_pixel_index,Gui_sp3_col);              
+    wire [15:0] Gui_sp1_col; Gui_Sp1 gsp1(translated_pixel_index,Gui_sp1_col);  
+    wire [15:0] Gui_sp2_col; Gui_Sp2 gsp2(translated_pixel_index,Gui_sp2_col);              
 
     always@(posedge clk_8hz)
     begin
         if(character_state != STATE_SP_0)
             sprite_sp = 2'b00;
         else
-            sprite_sp = (sprite_sp >= 2'b10) ? 2'b11 : sprite_sp + 1;
+            sprite_sp = (sprite_sp >= 2'b01) ? 2'b10 : sprite_sp + 1;
     end
     //------------------------------------------------------------------------------ 
 
@@ -141,20 +139,20 @@ module sprite_control (
             case(sprite_punch)
                 2'b00: oled_colour = Gui_p1_col;
                 2'b01: oled_colour = Gui_p2_col;
-                2'b10: oled_colour = Gui_p3_col;
-                2'b11: oled_colour = Gui_def_state;
+                default: oled_colour = Gui_def_state;
             endcase
             end
-        else if(character_state == STATE_SP_0)
+        else if(character_state == STATE_SP_0)    //Special Attack
             begin
                 case(sprite_sp)
                 2'b00: oled_colour = Gui_sp1_col;
                 2'b01: oled_colour = Gui_sp2_col;
-                2'b10: oled_colour = Gui_sp3_col;
-                2'b11: oled_colour = Gui_def_state;                      
+                default: oled_colour = Gui_def_state;                      
                 endcase
             end
-           
+        else
+            oled_colour = Gui_def_state;
+        /*    
         else if (character_state == STATE_INJURED)
                 begin
                     case(sprite_inj)

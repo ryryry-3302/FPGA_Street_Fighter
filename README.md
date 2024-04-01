@@ -31,6 +31,8 @@ For the super special combo, a bullet of random colour should shoot from the spr
 
 ### Switch mappings
 - sw[0] reset players positions to start and reset hp to full
+- sw[1] master [ON], slave [OFF]
+- sw[2] enable audio output
 - sw[7] player 2 receives AI inputs
 - sw[8] player 1 receives AI inputs
 
@@ -39,7 +41,28 @@ For the super special combo, a bullet of random colour should shoot from the spr
 - led[14] players within attack range
 - led[2:1] = winner; //state 00 fight //state 01 player 1 wins //state 02 player 2 wins
 - led[7:6] = player 2 comboMove  //0 means not attacking, 1 means nornmal attack, 2 means special attack, 3 means super attack
-- led[9:8] = player 1 comboMove 
+- led[9:8] = player 1 comboMove
+- led[13:10] On master, detect whether it received, sw[10]:Up sw[11]:Left sw[12]:Right sw[13]:Down inputs from slave (IF NEED MORE LEDs, YOU CAN REMOVE THESE)
+
+### PMOD mapping
+- JB: Audio Out Pmod
+- JC: OLED Pmod
+- Master:
+    - JA[1]: input_player2UpBtn
+    - JA[2]: input_player2DownBtn
+    - JA[3]: input_player2LeftBtn
+    - JA[4]: input_player2RightBtn
+    - JA[10] (Labelled JA_attack in .xdc file): input_player2AttackBtn
+    - Share a common ground with slave
+
+- Slave:
+    - JXADC[1]: slaveOut_player2UpBtn
+    - JXADC[2]: slaveOut_player2DownBtn
+    - JXADC[3]: slaveOut_player2LeftBtn
+    - JXADC[4]: slaveOut_player2RightBtn
+    - JXADC[10] (Labelled JXADC_attack in .xdc file): slaveOut_player2AttackBtn
+    - Share a common ground with master
+
 
 ### Menu
 

@@ -3,9 +3,9 @@
 // Company: 
 // Engineer: 
 // 
-// Create Date: 24.03.2024 20:00:44
+// Create Date: 23.03.2024 20:42:29
 // Design Name: 
-// Module Name: bgm_mod
+// Module Name: in_game_music_mod
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -20,10 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-//module bgm_mod(input enable, input clk, output reg music_reg);
-module bgm_mod(input clk, output speaker // PMOD JB[0]
-);
-//Mortal Combat Theme
+module punchSoundMod(input clk, output speaker);
 
 //// <Creation of Frequencies> ////
 wire F3, G3, A3, B3, C4, D4, E4, G4;
@@ -99,5 +96,5 @@ always @ (posedge clk) begin
     end
 end
 
-    assign speaker = music_reg;
+    assign speaker = G4;
 endmodule

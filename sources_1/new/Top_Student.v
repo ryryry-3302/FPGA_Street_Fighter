@@ -23,7 +23,8 @@ module Top_Student (
     output [15:0] led,
     output [6:0] seg,
     output [3:0] an,
-    output dp
+    output dp,
+    output speaker //audioOut pmod, connect to JB
 );
 
 
@@ -210,7 +211,10 @@ module Top_Student (
     assign led[2:1] = winner;
     //------------------------------------------------
     
-    
+    //Background Music Controller -------------------
+    musicController(.enableAudio(sw[2]), .clk(clk), .attackButtonRaw_1(btnC), .attackButtonRaw_2(player2AttackBtn), .player1Health(health_1), .player2Health(health_2), .state(winner), .audioOut(speaker));
+    //------------------------------------------------
+
     //OLED Driver -----------------------------------
     reg [15:0] oled_colour;
     

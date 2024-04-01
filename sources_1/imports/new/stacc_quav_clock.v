@@ -20,26 +20,26 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module stacc_quav_clock(input clk, output reg signal);
+module stacc_quav_clock(input clk, input m_val, output reg signal);
     wire clk_28Hz;
     reg [2:0] count;
     
     //CustomClock(clk ,1339285, clk_28Hz);
     //CustomClock(clk ,21428570, clk_2p3Hz);
-    CustomClock(clk ,1785713, clk_28Hz);
+    CustomClock(clk ,m_val, stacc_clk);
 
                      
 
-    always @ (posedge clk_28Hz) begin 
+    always @ (posedge stacc_clk) begin 
         count <= count + 1;
         
         //if (count == 0 || count == 1 || count == 2) begin
-        if (count == 0 || count == 1) begin
-            signal <= 1;
+        if (count == 0 || count == 1 || count == 2 || count == 3 || count == 4) begin
+            signal <= 0;
         end
         
-        else if (count == 2) begin
-            signal <= 0;
+        else if (count == 5) begin
+            signal <= 1;
         end
         
         else begin

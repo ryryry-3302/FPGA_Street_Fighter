@@ -95,21 +95,18 @@ module sprite_control (
 
 
 
-    // Getting Hit State -----------------------------------------------  
-    //Reverse the order cause module named wrongly
-    
+    // Getting Hit State -----------------------------------------------      
     reg [1:0] sprite_inj = 2'b00;
     parameter STATE_INJURED = 3'b100;
-    wire [15:0] Gui_i1_col; Gui_Inj3 gi1(translated_pixel_index,Gui_i1_col);
-    wire [15:0] Gui_i2_col; Gui_Inj2 gi2(translated_pixel_index,Gui_i2_col);
-    wire [15:0] Gui_i3_col; Gui_Inj1 gi3(translated_pixel_index,Gui_i3_col);     
+    wire [15:0] Gui_i1_col; Gui_Inj2 gi2(translated_pixel_index,Gui_i1_col);
+    wire [15:0] Gui_i2_col; Gui_Inj1 gi3(translated_pixel_index,Gui_i2_col);     
 
     always@(posedge clk_8hz)
     begin
         if(character_state != STATE_INJURED)
             sprite_inj = 2'b00;
         else
-            sprite_inj = (sprite_inj >= 2'b10) ? 2'b11 : sprite_inj + 1;
+            sprite_inj = (sprite_inj >= 2'b01) ? 2'b11 : sprite_inj + 1;
     end 
     
     //------------------------------------------------------------------------------    
@@ -153,14 +150,13 @@ module sprite_control (
             
    
         else if (character_state == STATE_INJURED)
-                begin
-                    case(sprite_inj)
-                    2'b00: oled_colour = Gui_i1_col;
-                    2'b01: oled_colour = Gui_i2_col;
-                    2'b10: oled_colour = Gui_i3_col;
-                    2'b11: oled_colour = Gui_def_state;
-                    endcase                
-                end
+            begin
+                case(sprite_inj)
+                2'b00: oled_colour = Gui_i1_col;
+                2'b01: oled_colour = Gui_i2_col;
+                default: oled_colour = Gui_def_state;
+                endcase                
+            end
          
         else
             oled_colour = Gui_def_state;

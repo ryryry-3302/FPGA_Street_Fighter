@@ -27,7 +27,11 @@ module Top_Student (
     output speaker //audioOut pmod, connect to JB
 );
 
-
+    //Hp management----------------------------------
+    wire [8:0] health_1;
+    wire [8:0] health_2;
+    wire [2:0] winner; //Used in health management
+    
     wire CLK_20Hz; //the master TPS clock
     
     wire player1BOT; wire player2BOT;
@@ -100,6 +104,7 @@ module Top_Student (
     
     playerMovementHandler player1MovementHandler(
         //for AI
+        .health(health_1),
         .random5bit(random5bitValue1),
         .BYPASS(player1BOT),
         //raw inputs
@@ -129,6 +134,7 @@ module Top_Student (
        
     playerMovementHandler player2MovementHandler(
         //for AI
+        .health(health_2),
         .random5bit(random5bitValue2),
         .BYPASS(player2BOT),
         //raw inputs
@@ -170,7 +176,7 @@ module Top_Student (
     wire player1isColliding;
     wire player2isColliding;
     
-    wire [2:0] winner; //Used in health management
+
     
     // Reset Cond: sw[0] or btnC + winnner defined must be held for 2s or more before reset_cond goes high
     reg reset_cond = 0;
@@ -198,9 +204,7 @@ module Top_Student (
     assign led[14] = player_1_hitrangewire;
     assign led[15] = player1isColliding;
     
-    //Hp management----------------------------------
-    wire [8:0] health_1;
-    wire [8:0] health_2;
+
     
 
     HealthManagement HealthManagement(.clk(CLK_20Hz),.reset(reset_cond),

@@ -74,9 +74,8 @@ module HealthManagement (input clk, input reset,
        end
        
        
-       if(health_1==0 && health_2==0) //Game just started
-          state <= 2'b11; 
-       else if(health_2 == 0)
+        
+       if(health_2 == 0)
           state <= 2'b01;
        else if(health_1 == 0)
           state <= 2'b10;

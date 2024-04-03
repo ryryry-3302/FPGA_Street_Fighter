@@ -17,7 +17,7 @@ module Top_Student (
     input btnC, btnL, btnR, btnU, btnD,
     input [7:0] JA, //slaveMasterController master input signals
     output [7:0] JXADC, //slaveMasterController slave output signals
-    output reg [7:0] JC,
+    output [7:0] JC,
     output [15:0] led,
     output [6:0] seg,
     output [3:0] an,
@@ -367,15 +367,15 @@ module Top_Student (
         .vccen(master_vccen),
         .pmoden(master_pmoden));
         
-        always @ (posedge clk) begin
+      //  always @ (posedge clk) begin
 //            oled_clock <= sw[1] ? CLK_6MHz25 : slave_CLK_6MHz25;
-            JC[0] <= sw[1] ? master_cs : slave_cs;
-            JC[1] <= sw[1] ? master_sdin : slave_sdin;
-            JC[3] <= sw[1] ? master_sclk : slave_sclk;
-            JC[4] <= sw[1] ? master_d_cn : slave_d_cn;
-            JC[5] <= sw[1] ? master_resn : slave_resn;
-            JC[6] <= sw[1] ? master_vccen : slave_vccen;
-            JC[7] <= sw[1] ? master_pmoden : slave_pmoden;
-        end
+        assign    JC[0] = sw[1] ? master_cs : slave_cs;
+        assign   JC[1] = sw[1] ? master_sdin : slave_sdin;
+        assign    JC[3] = sw[1] ? master_sclk : slave_sclk;
+        assign    JC[4] = sw[1] ? master_d_cn : slave_d_cn;
+        assign    JC[5] = sw[1] ? master_resn : slave_resn;
+        assign    JC[6] = sw[1] ? master_vccen : slave_vccen;
+         assign    JC[7] = sw[1] ? master_pmoden : slave_pmoden;
+       // end
 
 endmodule

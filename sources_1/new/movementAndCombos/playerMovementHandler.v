@@ -123,11 +123,11 @@ module playerMovementHandler(
             leftAI = (random5bit > 15);
             rightAI = !leftAI;
         end
-        countAIattack = (countAIattack > (health > 154? 10: 7))? 0:countAIattack+1;
+        countAIattack = (countAIattack > (health > 154? 5: 3))? 0:countAIattack+1;
         if (countAIattack == 0) begin
-            attackAI = (random5bit >= 28)? 3: 
-            (random5bit > 26)?  2:
-            (random5bit >6)? 1:
+            attackAI = (random5bit >= 29)? 3: 
+            (random5bit > 27)?  2:
+            (random5bit >18)? 1:
             0;
             //i Chucked jumping in here instead of movement so he doesnt keep jumping for periods
             upAI = (random5bit >28)? 1: 0;

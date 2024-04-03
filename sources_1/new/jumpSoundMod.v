@@ -20,13 +20,14 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module punchSoundMod(input clk, output speaker);
+module jumpSoundMod(input clk, output speaker);
 
 //// <Creation of Frequencies> ////
-wire G4;
+wire E4;
 reg music_reg;
 
-CustomClock G4_gen (clk, 127550, G4);
+CustomClock E4_gen (clk, 151684, E4);
+//// </ Creation of Frequencies> ////
 
-    assign speaker = G4;
+    assign speaker = E4;
 endmodule

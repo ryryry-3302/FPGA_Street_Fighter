@@ -62,16 +62,29 @@ module playerMovementHandler(
     reg downAI = 0;
     reg [1:0]attackAI = 0;
 
+ //debouncers for the inputs
+    wire attackHOLDABLE; reg attackREG;
     
-    //debouncers for the inputs
+    reg [31:0]attackCount = 1;
+
     wire up; wire down; wire left; wire right; wire attack; wire block;
     debouncer upDebouncer(clk,upButtonRaw,up); 
     debouncer downDebouncer(clk,downButtonRaw,down); 
     debouncer leftDebouncer(clk,leftButtonRaw,left); 
     debouncer rightDebouncer(clk,rightButtonRaw,right); 
-    debouncer attackDebouncer(clk,attackButtonRaw,attack); 
+    debouncer attackDebouncer(clk,attackButtonRaw,attackHOLDABLE); 
     debouncer blockDebouncer(clk,blockButtonRaw,block); 
-    
+
+    always @ (posedge (clk)) begin
+        if(attackHOLDABLE) begin
+            attackCount = ((attackCount<20000000) && (attackCount!=0))? attackCount+1:0;
+     end
+    else begin
+            attackCount = 1;
+            end
+     end
+
+    assign attack = ((attackCount != 0)&& attackHOLDABLE);  
     //movement
     wire canMoveHori;
     wire canMoveVerti;
@@ -110,11 +123,11 @@ module playerMovementHandler(
             leftAI = (random5bit > 15);
             rightAI = !leftAI;
         end
-        countAIattack = (countAIattack > (health > 154? 6: 2))? 0:countAIattack+1;
+        countAIattack = (countAIattack > (health > 154? 5: 3))? 0:countAIattack+1;
         if (countAIattack == 0) begin
-            attackAI = (random5bit == 30)? 3: 
-            (random5bit > 26)?  2:
-            (random5bit >6)? 1:
+            attackAI = (random5bit >= 29)? 3: 
+            (random5bit > 27)?  2:
+            (random5bit >18)? 1:
             0;
             //i Chucked jumping in here instead of movement so he doesnt keep jumping for periods
             upAI = (random5bit >28)? 1: 0;

@@ -20,62 +20,38 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module slaveMasterSetter(input isMaster, input clk,
-    input btnU, input btnD, input btnL, input btnR, input btnC
+module slaveMasterSetter(input isMaster, input clk ,input [7:0] JA, output [7:0] JXADC
+
+    //Master inputs and outputs:
+    ,input oled_clk, input cs, input sdin, input sclk, input d_cn, input resn, input vccen, input pmoden
+    ,output player2UpBtn, output player2LeftBtn, output player2RightBtn, 
+    output player2AttackBtn, output player2DownBtn
     
-    //Master inputs:
-    ,input input_player2UpBtn, input input_player2DownBtn, input input_player2LeftBtn, input input_player2RightBtn,
-    input input_player2AttackBtn,
-    output player2UpBtn, output player2DownBtn, output player2LeftBtn, output player2RightBtn, 
-    output player2AttackBtn
-    
-    //Slave outputs:
-    ,output slaveOut_player2UpBtn, output slaveOut_player2DownBtn, output slaveOut_player2LeftBtn, output slaveOut_player2RightBtn,
-    output slaveOut_player2AttackBtn
+    //Slave inputs and outputs:
+    ,input btnU, input btnD, input btnL, input btnR, input btnC
+    , output slave_cs, output slave_sdin, output slave_sclk, output slave_d_cn, output slave_resn, output slave_vccen, output slave_pmoden
     );
-    
-    reg inputReg_player2UpBtn, inputReg_player2DownBtn, inputReg_player2LeftBtn, inputReg_player2RightBtn, inputReg_player2AttackBtn;
-//    wire debounced_player2UpBtn,debounced_player2DownBtn, debounced_player2LeftBtn, debounced_player2RightBtn, debounced_player2AttackBtn;
-//    debouncer(.clk(clk), .button(btnU), .buttonSignal(debounced_player2UpBtn));
-//    debouncer(.clk(clk), .button(btnD), .buttonSignal(debounced_player2DownBtn));
-//    debouncer(.clk(clk), .button(btnL), .buttonSignal(debounced_player2LeftBtn));
-//    debouncer(.clk(clk), .button(btnR), .buttonSignal(debounced_player2RightBtn));
-//    debouncer(.clk(clk), .button(btnC), .buttonSignal(debounced_player2AttackBtn)); 
-    
-    always @ (posedge clk) begin
-        if (isMaster == 1) begin
-            inputReg_player2UpBtn <= input_player2UpBtn;
-            inputReg_player2DownBtn <= input_player2DownBtn;
-            inputReg_player2LeftBtn <= input_player2LeftBtn;
-            inputReg_player2RightBtn <= input_player2RightBtn;
-            inputReg_player2AttackBtn <= input_player2AttackBtn;        
-        end
         
-        else begin
-            inputReg_player2UpBtn <= 0;
-            inputReg_player2DownBtn <= 0;
-            inputReg_player2LeftBtn <= 0;
-            inputReg_player2RightBtn <= 0;
-            inputReg_player2AttackBtn <= 0;   
-         end
-    end
+    assign JXADC[0] = isMaster ? cs     : btnU;
+    assign JXADC[1] = isMaster ? sdin   : btnD;
+    assign JXADC[2] = isMaster ? sclk   : btnL;
+    assign JXADC[3] = isMaster ? d_cn   : btnR;
+    assign JXADC[4] = isMaster ? resn   : btnC;
+    assign JXADC[5] = isMaster ? vccen  : 0;
+    assign JXADC[6] = isMaster ? pmoden : 0;
     
-    assign player2UpBtn = inputReg_player2UpBtn;
-    assign player2DownBtn = inputReg_player2DownBtn;
-    assign player2LeftBtn = inputReg_player2LeftBtn;
-    assign player2RightBtn = inputReg_player2RightBtn;
-    assign player2AttackBtn = inputReg_player2AttackBtn;
+    assign player2UpBtn     = isMaster ? JA[0] :0 ;
+    assign player2DownBtn   = isMaster ? JA[1] :0 ;
+    assign player2LeftBtn   = isMaster ? JA[2] :0 ;
+    assign player2RightBtn  = isMaster ? JA[3] :0 ;
+    assign player2AttackBtn = isMaster ? JA[4] :0 ;
     
-//    assign slaveOut_player2UpBtn = ~isMaster & debounced_player2UpBtn;
-//    assign slaveOut_player2DownBtn = ~isMaster & debounced_player2DownBtn;
-//    assign slaveOut_player2LeftBtn = ~isMaster & debounced_player2LeftBtn;
-//    assign slaveOut_player2RightBtn = ~isMaster & debounced_player2RightBtn;
-//    assign slaveOut_player2AttackBtn = ~isMaster & debounced_player2AttackBtn;
-    
-    assign slaveOut_player2UpBtn = ~isMaster & btnU;
-    assign slaveOut_player2DownBtn = ~isMaster & btnD;
-    assign slaveOut_player2LeftBtn = ~isMaster & btnL;
-    assign slaveOut_player2RightBtn = ~isMaster & btnR;
-    assign slaveOut_player2AttackBtn = ~isMaster & btnC;      
+    assign slave_cs     = ~isMaster ? JA[0] : 0;
+    assign slave_sdin   = ~isMaster ? JA[1] : 0;
+    assign slave_sclk   = ~isMaster ? JA[2] : 0;
+    assign slave_d_cn   = ~isMaster ? JA[3] : 0;
+    assign slave_resn   = ~isMaster ? JA[4] : 0;
+    assign slave_vccen  = ~isMaster ? JA[5] : 0;
+    assign slave_pmoden = ~isMaster ? JA[6] : 0;
     
 endmodule

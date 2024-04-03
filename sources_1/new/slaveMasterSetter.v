@@ -20,62 +20,73 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module slaveMasterSetter(input isMaster, input clk,
-    input btnU, input btnD, input btnL, input btnR, input btnC
+module slaveMasterSetter(input isMaster, input clk ,input [7:0] JA, output reg [7:0] JXADC
+
+    //Master inputs and outputs:
+    ,input oled_clk, input cs, input sdin, input sclk, input d_cn, input resn, input vccen, input pmoden
+    ,output reg player2UpBtn, output reg player2DownBtn, output reg player2LeftBtn, output reg player2RightBtn, 
+    output reg player2AttackBtn
     
-    //Master inputs:
-    ,input input_player2UpBtn, input input_player2DownBtn, input input_player2LeftBtn, input input_player2RightBtn,
-    input input_player2AttackBtn,
-    output player2UpBtn, output player2DownBtn, output player2LeftBtn, output player2RightBtn, 
-    output player2AttackBtn
-    
-    //Slave outputs:
-    ,output slaveOut_player2UpBtn, output slaveOut_player2DownBtn, output slaveOut_player2LeftBtn, output slaveOut_player2RightBtn,
-    output slaveOut_player2AttackBtn
+    //Slave inputs and outputs:
+    ,input btnU, input btnD, input btnL, input btnR, input btnC
+    ,output slave_CLK_6MHz25, output reg slave_cs, output reg slave_sdin, output reg slave_sclk, output reg slave_d_cn, output reg slave_resn, output reg slave_vccen, output reg slave_pmoden
     );
     
-    reg inputReg_player2UpBtn, inputReg_player2DownBtn, inputReg_player2LeftBtn, inputReg_player2RightBtn, inputReg_player2AttackBtn;
-//    wire debounced_player2UpBtn,debounced_player2DownBtn, debounced_player2LeftBtn, debounced_player2RightBtn, debounced_player2AttackBtn;
-//    debouncer(.clk(clk), .button(btnU), .buttonSignal(debounced_player2UpBtn));
-//    debouncer(.clk(clk), .button(btnD), .buttonSignal(debounced_player2DownBtn));
-//    debouncer(.clk(clk), .button(btnL), .buttonSignal(debounced_player2LeftBtn));
-//    debouncer(.clk(clk), .button(btnR), .buttonSignal(debounced_player2RightBtn));
-//    debouncer(.clk(clk), .button(btnC), .buttonSignal(debounced_player2AttackBtn)); 
+    assign slave_CLK_6MHz25 = oled_clk;
     
     always @ (posedge clk) begin
         if (isMaster == 1) begin
-            inputReg_player2UpBtn <= input_player2UpBtn;
-            inputReg_player2DownBtn <= input_player2DownBtn;
-            inputReg_player2LeftBtn <= input_player2LeftBtn;
-            inputReg_player2RightBtn <= input_player2RightBtn;
-            inputReg_player2AttackBtn <= input_player2AttackBtn;        
+        //Master Mode
+            //Input pmod connector JA
+            player2UpBtn     <= JA[0];
+//            player2DownBtn   <= JA[1];
+            player2LeftBtn   <= JA[2];
+            player2RightBtn  <= JA[3];
+            player2AttackBtn <= JA[4];
+
+            //Output pmod connector JXADC
+            JXADC[0] <= cs;
+            JXADC[1] <= sdin;
+            JXADC[2] <= sclk;
+            JXADC[3] <= d_cn;
+            JXADC[4] <= resn;
+            JXADC[5] <= vccen;
+            JXADC[6] <= pmoden;
+            
+//            //Set other outputs as LOW (0)
+//            slave_cs    <= 0;
+//            slave_sdin  <= 0;
+//            slave_sclk  <= 0;
+//            slave_d_cn  <= 0;
+//            slave_resn  <= 0; 
+//            slave_vccen <= 0;
+//            slave_pmoden <= 0;
         end
         
         else begin
-            inputReg_player2UpBtn <= 0;
-            inputReg_player2DownBtn <= 0;
-            inputReg_player2LeftBtn <= 0;
-            inputReg_player2RightBtn <= 0;
-            inputReg_player2AttackBtn <= 0;   
-         end
+        //Slave Mode
+            //Input pmod connector JA
+            slave_cs    <= JA[0];
+            slave_sdin  <= JA[1];
+            slave_sclk  <= JA[2];
+            slave_d_cn  <= JA[3];
+            slave_resn  <= JA[4]; 
+            slave_vccen <= JA[5];
+            slave_pmoden <= JA[6];
+
+            //Output pmod connector JXADC
+            JXADC[0]  <= btnU;
+//            JXADC[1]  <= btnD;
+            JXADC[2]  <= btnL;
+            JXADC[3]  <= btnR;
+            JXADC[4] <= btnC;
+            
+            //Set other outputs as LOW (0)
+            player2UpBtn     <= 0;
+//            player2DownBtn   <= 0;
+            player2LeftBtn   <= 0;
+            player2RightBtn  <= 0;
+            player2AttackBtn <= 0;            
+        end
     end
-    
-    assign player2UpBtn = inputReg_player2UpBtn;
-    assign player2DownBtn = inputReg_player2DownBtn;
-    assign player2LeftBtn = inputReg_player2LeftBtn;
-    assign player2RightBtn = inputReg_player2RightBtn;
-    assign player2AttackBtn = inputReg_player2AttackBtn;
-    
-//    assign slaveOut_player2UpBtn = ~isMaster & debounced_player2UpBtn;
-//    assign slaveOut_player2DownBtn = ~isMaster & debounced_player2DownBtn;
-//    assign slaveOut_player2LeftBtn = ~isMaster & debounced_player2LeftBtn;
-//    assign slaveOut_player2RightBtn = ~isMaster & debounced_player2RightBtn;
-//    assign slaveOut_player2AttackBtn = ~isMaster & debounced_player2AttackBtn;
-    
-    assign slaveOut_player2UpBtn = ~isMaster & btnU;
-    assign slaveOut_player2DownBtn = ~isMaster & btnD;
-    assign slaveOut_player2LeftBtn = ~isMaster & btnL;
-    assign slaveOut_player2RightBtn = ~isMaster & btnR;
-    assign slaveOut_player2AttackBtn = ~isMaster & btnC;      
-    
 endmodule

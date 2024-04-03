@@ -128,7 +128,7 @@ module Top_Student (
         .playerChar(player1CharChoice),
         .isCrouched(player1IsCrouched),
         .isInAir(player1IsInAir),
-        .isStunned(player1IsStunned),
+        .isStunned(0),
         .isPerformingAttackAnimation(player1IsPerformingAttackAnimation)
         );
        
@@ -158,7 +158,7 @@ module Top_Student (
         .playerChar(player2CharChoice),
         .isCrouched(player2IsCrouched),
         .isInAir(player2IsInAir),
-        .isStunned(player2IsStunned),
+        .isStunned(0),
         .isPerformingAttackAnimation(player2IsPerformingAttackAnimation)
         );
 
@@ -204,6 +204,7 @@ module Top_Student (
     assign led[14] = player_1_hitrangewire;
     assign led[15] = player1isColliding;
     
+
 
     
 

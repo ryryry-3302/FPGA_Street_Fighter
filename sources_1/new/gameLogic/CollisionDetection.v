@@ -41,7 +41,7 @@ always @(posedge clk)begin
     distance_Y <= player_1y - player_2y;
     distance_squared <= (distance_X * distance_X) + (distance_Y * distance_Y);
     
-    if  (~reset &&distance_squared < (20 * 20)) begin
+    if  (~reset &&distance_squared <= (20 * 20)) begin
         player_1_collision <= 1;
         player_2_collision <= 1;
     end

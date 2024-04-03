@@ -300,7 +300,7 @@ module Top_Student (
                 .pixel_index(pixel_index), .random_5bit_val(random5bitValue1),
                 .bullet_x(bullet_x1), .bullet_y(bullet_y1),
                 .bullet_en(bullet_en1),
-                .oled_colour(bullet_col_1),.playerhit(bullethit2));
+                .oled_colour(bullet_col_1),.hit_player(bullethit2));
     wire bullethit1;
     wire [15:0] bullet_col_2;
     wire [6:0] bullet_x2; wire [6:0] bullet_y2;
@@ -312,7 +312,7 @@ module Top_Student (
                 .pixel_index(pixel_index), .random_5bit_val(random5bitValue2),
                 .bullet_x(bullet_x2), .bullet_y(bullet_y2),
                 .bullet_en(bullet_en2),
-                .oled_colour(bullet_col_2),.playerhit(bullethit1));                
+                .oled_colour(bullet_col_2),.hit_player(bullethit1));                
 
 
     // Oled colour mux -------------------------------------------

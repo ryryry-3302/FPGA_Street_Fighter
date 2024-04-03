@@ -59,7 +59,7 @@ module bullet(
     end
     
     wire player_hit_detect;
-    assign player_hit_detect =  (bullet_x >= player_2x - BULLET_RADIUS)
+    assign player_hit_detect =  bullet_en && (bullet_x >= player_2x - BULLET_RADIUS)
                     && (bullet_x <= player_2x + BULLET_RADIUS) 
                     && (bullet_y >= player_2y - BULLET_RADIUS - RAISE_BULLET) 
                     && (bullet_y <= player_2y + BULLET_RADIUS - RAISE_BULLET);

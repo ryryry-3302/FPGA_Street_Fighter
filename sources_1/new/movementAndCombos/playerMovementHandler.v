@@ -77,7 +77,7 @@ module playerMovementHandler(
 
     always @ (posedge (clk)) begin
         if(attackHOLDABLE) begin
-            attackCount = ((attackCount>20000000) && (attackCount!=0))? 0: attackCount+1;
+            attackCount = ((attackCount<20000000) && (attackCount!=0))? attackCount+1:0;
      end
     else begin
             attackCount = 1;
@@ -123,9 +123,9 @@ module playerMovementHandler(
             leftAI = (random5bit > 15);
             rightAI = !leftAI;
         end
-        countAIattack = (countAIattack > (health > 154? 6: 4))? 0:countAIattack+1;
+        countAIattack = (countAIattack > (health > 154? 10: 7))? 0:countAIattack+1;
         if (countAIattack == 0) begin
-            attackAI = (random5bit == 30)? 3: 
+            attackAI = (random5bit >= 28)? 3: 
             (random5bit > 26)?  2:
             (random5bit >6)? 1:
             0;

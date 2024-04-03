@@ -8,12 +8,13 @@ module bullet(
     input [6:0] player_2y,
     input [12:0] pixel_index,
     input [4:0] random_5bit_val,
+    input clk20hz,
 
     output reg [6:0] bullet_x = 0,
     output reg [6:0] bullet_y = 0,
     output reg bullet_en = 0,
     output reg [15:0] oled_colour,
-    output hit_player
+    output reg hit_player = 0
 );  
     parameter SPECIAL_ATTACK_STATE = 2'b11; //shld be 11 udlrlr attack
     parameter BULLET_RADIUS = 4;
@@ -37,8 +38,28 @@ module bullet(
         else
                 bullet_x = player_1x;
     end                
+    
+    reg[31:0] counter_hit = 0;
+    always@(posedge clk)begin
+        if(player_hit_detect)
+        begin
+            counter_hit <= 1;
+            hit_player <= 1;
+        end
+        
+        else if(counter_hit) begin
+            counter_hit <= counter_hit <5000000? counter_hit+1: 0;
+            hit_player <=1;
+            end
+            
+        else begin
+            hit_player <=0;
+         end   
 
-    assign hit_player =  (bullet_x >= player_2x - BULLET_RADIUS)
+    end
+    
+    wire player_hit_detect;
+    assign player_hit_detect =  (bullet_x >= player_2x - BULLET_RADIUS)
                     && (bullet_x <= player_2x + BULLET_RADIUS) 
                     && (bullet_y >= player_2y - BULLET_RADIUS - RAISE_BULLET) 
                     && (bullet_y <= player_2y + BULLET_RADIUS - RAISE_BULLET);

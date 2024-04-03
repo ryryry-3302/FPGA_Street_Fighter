@@ -20,13 +20,14 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module musicController(input enableAudio, input clk, input attackButtonRaw_1, input attackButtonRaw_2, input [8:0] player1Health, input [8:0] player2Health, input [1:0] state, output reg audioOut);
+module musicController(input enableAudio, input clk, input jumpButtonRaw_1, input jumpButtonRaw_2, input [1:0] attackButtonRaw_1, input [1:0] attackButtonRaw_2, input [8:0] player1Health, input [8:0] player2Health, input [1:0] state, output reg audioOut);
     //Module currently restricted to just player 1 Info
     parameter healthThreshold = 154; //Between 9 bits
-    wire bgm_output, critical_music_output, punch_sound_output;
+    wire bgm_output, critical_music_output, punch_sound_output, jump_sound_output;
     bgm_mod bgm_gen (clk, bgm_output);
     criticalmusic_gen critical_music (clk, critical_music_output);
     punchSoundMod punch_sound_gen(clk, punch_sound_output);
+    jumpSoundMod jump_sound_gen(clk, jump_sound_output);
 
 
 
@@ -37,15 +38,16 @@ module musicController(input enableAudio, input clk, input attackButtonRaw_1, in
                 audioOut <= 0;
             end             
             
-            else if (attackButtonRaw_1 == 1 || attackButtonRaw_2 == 1) begin
+            else if (attackButtonRaw_1 != 2'b00 || attackButtonRaw_2 != 2'b00) begin //As long as it is doing any attack
                 //Play crouching sound effect
                 audioOut <= punch_sound_output;
             end
             
-//            else if (isJumping == 1) begin
-//                //Play jumping sound effect
+            else if (jumpButtonRaw_1 == 1 || jumpButtonRaw_2 == 1) begin
+                //Play jumping sound effect
+                audioOut <= jump_sound_output;
                 
-//            end
+            end
             
             else if (player1Health <= healthThreshold || player2Health <= healthThreshold) begin
                 //Play critical health threshold music

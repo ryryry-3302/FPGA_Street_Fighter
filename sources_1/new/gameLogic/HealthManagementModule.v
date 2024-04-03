@@ -15,7 +15,7 @@ module HealthManagement (input clk, input reset,
   //add invincibility below`
     
 
-  always @(posedge clk || bullethit1 ||  bullethit2)begin
+  always @(posedge clk)begin
        if (reset)begin
           health_2 <= 400;
           health_1 <= 400;
@@ -25,18 +25,18 @@ module HealthManagement (input clk, input reset,
        
        if (bullethit2 && health_2>0 && state == 2'b00)begin
                     
-                     health_2 <= (health_2 > 20)? health_2 - 20:0;
+         health_2 <= (health_2 > 15)? health_2 - 15:0;
                     hit2 <= 1;
               end
        else if (player_1_hitrangewire && attack_statex == 2'b10 && health_2>0 && state == 2'b00)begin
-                            health_2 <= health_2 > 10? health_2 -10: 0;
+                            health_2 <= health_2 >10? health_2 -10: 0;
                           //  immunity_frames2 <= 1;
                                               hit2 <= 1;
 
                      end
        
        else if (  player_1_hitrangewire && attack_statex == 2'b01 && health_2>0 && state == 2'b00)begin
-              health_2 <= health_2>4?health_2 -4:0;
+              health_2 <= health_2>5?health_2 -5:0;
               //immunity_frames2 <= 1;
                                   hit2 <= 1;
 
@@ -50,7 +50,7 @@ module HealthManagement (input clk, input reset,
        
        
        if (bullethit1 && health_1>0 && state == 2'b00)begin
-                     health_1 <= (health_1 > 40)? health_1 - 20:0;
+         health_1 <= (health_1 > 15)? health_1 - 15:0;
                                          hit1 <= 1;
 
                   //   immunity_frames1 <= 1;
@@ -63,7 +63,7 @@ module HealthManagement (input clk, input reset,
                      end
 
        else if (player_1_hitrangewire && attack_statey == 2'b01 && health_1>0 && state == 2'b00)begin
-              health_1 <= health_1 > 4? health_1 -4:0;
+              health_1 <= health_1 > 5? health_1 -5:0;
                                   hit1 <= 1;
 
            //   immunity_frames1 <= 1;

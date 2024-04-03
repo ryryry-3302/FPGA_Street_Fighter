@@ -21,7 +21,8 @@
 
 
 module playerMovementHandler(
-
+    
+    input health,
     input BYPASS, //bot will have BYPASS to 1 to indicate it can access combos easily
     input [4:0]random5bit,
     //raw inputs
@@ -109,7 +110,7 @@ module playerMovementHandler(
             leftAI = (random5bit > 15);
             rightAI = !leftAI;
         end
-        countAIattack = (countAIattack > 6)? 0:countAIattack+1;
+        countAIattack = (countAIattack > (health > 154? 6: 4))? 0:countAIattack+1;
         if (countAIattack == 0) begin
             attackAI = (random5bit == 30)? 3: 
             (random5bit > 26)?  2:

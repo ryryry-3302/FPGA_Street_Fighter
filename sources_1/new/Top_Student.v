@@ -27,7 +27,11 @@ module Top_Student (
     output speaker //audioOut pmod, connect to JB
 );
 
-
+    //Hp management----------------------------------
+    wire [8:0] health_1;
+    wire [8:0] health_2;
+    wire [2:0] winner; //Used in health management
+    
     wire CLK_20Hz; //the master TPS clock
     
     wire player1BOT; wire player2BOT;
@@ -100,6 +104,7 @@ module Top_Student (
     
     playerMovementHandler player1MovementHandler(
         //for AI
+        .health(health_1),
         .random5bit(random5bitValue1),
         .BYPASS(player1BOT),
         //raw inputs
@@ -123,12 +128,13 @@ module Top_Student (
         .playerChar(player1CharChoice),
         .isCrouched(player1IsCrouched),
         .isInAir(player1IsInAir),
-        .isStunned(player1IsStunned),
+        .isStunned(0),
         .isPerformingAttackAnimation(player1IsPerformingAttackAnimation)
         );
        
     playerMovementHandler player2MovementHandler(
         //for AI
+        .health(health_2),
         .random5bit(random5bitValue2),
         .BYPASS(player2BOT),
         //raw inputs
@@ -152,7 +158,7 @@ module Top_Student (
         .playerChar(player2CharChoice),
         .isCrouched(player2IsCrouched),
         .isInAir(player2IsInAir),
-        .isStunned(player2IsStunned),
+        .isStunned(0),
         .isPerformingAttackAnimation(player2IsPerformingAttackAnimation)
         );
 
@@ -170,7 +176,7 @@ module Top_Student (
     wire player1isColliding;
     wire player2isColliding;
     
-    wire [2:0] winner; //Used in health management
+
     
     // Reset Cond: sw[0] or btnC + winnner defined must be held for 2s or more before reset_cond goes high
     reg reset_cond = 0;
@@ -198,9 +204,8 @@ module Top_Student (
     assign led[14] = player_1_hitrangewire;
     assign led[15] = player1isColliding;
     
-    //Hp management----------------------------------
-    wire [8:0] health_1;
-    wire [8:0] health_2;
+
+
     
 
     HealthManagement HealthManagement(.clk(CLK_20Hz),.reset(reset_cond),
@@ -296,7 +301,7 @@ module Top_Student (
                 .pixel_index(pixel_index), .random_5bit_val(random5bitValue1),
                 .bullet_x(bullet_x1), .bullet_y(bullet_y1),
                 .bullet_en(bullet_en1),
-                .oled_colour(bullet_col_1),.playerhit(bullethit2));
+                .oled_colour(bullet_col_1),.hit_player(bullethit2));
     wire bullethit1;
     wire [15:0] bullet_col_2;
     wire [6:0] bullet_x2; wire [6:0] bullet_y2;
@@ -308,7 +313,7 @@ module Top_Student (
                 .pixel_index(pixel_index), .random_5bit_val(random5bitValue2),
                 .bullet_x(bullet_x2), .bullet_y(bullet_y2),
                 .bullet_en(bullet_en2),
-                .oled_colour(bullet_col_2),.playerhit(bullethit1));                
+                .oled_colour(bullet_col_2),.hit_player(bullethit1));                
 
 
     // Oled colour mux -------------------------------------------

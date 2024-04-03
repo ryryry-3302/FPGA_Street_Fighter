@@ -13,7 +13,7 @@ module bullet(
     output reg [6:0] bullet_y = 0,
     output reg bullet_en = 0,
     output reg [15:0] oled_colour,
-    output playerhit
+    output hit_player
 );  
     parameter SPECIAL_ATTACK_STATE = 2'b11; //shld be 11 udlrlr attack
     parameter BULLET_RADIUS = 4;
@@ -38,7 +38,7 @@ module bullet(
                 bullet_x = player_1x;
     end                
 
-    wire hit_player =  (bullet_x >= player_2x - BULLET_RADIUS)
+    assign hit_player =  (bullet_x >= player_2x - BULLET_RADIUS)
                     && (bullet_x <= player_2x + BULLET_RADIUS) 
                     && (bullet_y >= player_2y - BULLET_RADIUS - RAISE_BULLET) 
                     && (bullet_y <= player_2y + BULLET_RADIUS - RAISE_BULLET);
@@ -55,8 +55,6 @@ module bullet(
             bullet_y = player_1y - RAISE_BULLET;
             updated_mirrored = mirrored;
     end
-    
-    assign playerhit = hit_player;
     
     wire [15:0] bullet_col;
     reg [7:0] hue_res = 0;

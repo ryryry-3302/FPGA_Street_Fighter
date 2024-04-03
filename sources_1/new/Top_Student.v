@@ -85,12 +85,12 @@ module Top_Student (
         
             //Master inputs and outputs:
             ,.cs(master_cs), .sdin(master_cs), .sclk(master_sclk), .d_cn(master_d_cn), .resn(master_resn), .vccen(master_vccen), .pmoden(master_pmoden)
-            ,.player2UpBtn(player2UpBtn), .player2DownBtn(player2DownBtn), .player2LeftBtn(player2LeftBtn), .player2RightBtn(player2RightBtn), 
-            .player2AttackBtn(player2AttackBtn)
+            ,.player2UpBtn(player2UpBtn), .player2LeftBtn(player2LeftBtn), .player2RightBtn(player2RightBtn), 
+            .player2AttackBtn(player2AttackBtn), .player2DownBtn(player2DownBtn)
             
             //Slave inputs and outputs:
             ,.btnU(btnU), .btnD(btnD), .btnL(btnL), .btnR(btnR), .btnC(btnC)
-            , .slave_CLK_6MHz25(slave_CLK_6MHz25), .slave_cs(slave_cs), .slave_sdin(slave_sdin), .slave_sclk(slave_sclk), .slave_d_cn(slave_d_cn), .slave_resn(slave_resn), .slave_vccen(slave_vccen), .slave_pmoden(slave_pmoden)
+            , .slave_cs(slave_cs), .slave_sdin(slave_sdin), .slave_sclk(slave_sclk), .slave_d_cn(slave_d_cn), .slave_resn(slave_resn), .slave_vccen(slave_vccen), .slave_pmoden(slave_pmoden)
             );
     
     assign led[10] = player2UpBtn;

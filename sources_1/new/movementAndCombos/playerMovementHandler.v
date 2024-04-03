@@ -62,16 +62,29 @@ module playerMovementHandler(
     reg downAI = 0;
     reg [1:0]attackAI = 0;
 
+ //debouncers for the inputs
+    wire attackHOLDABLE; reg attackREG;
     
-    //debouncers for the inputs
+    reg [31:0]attackCount = 1;
+
     wire up; wire down; wire left; wire right; wire attack; wire block;
     debouncer upDebouncer(clk,upButtonRaw,up); 
     debouncer downDebouncer(clk,downButtonRaw,down); 
     debouncer leftDebouncer(clk,leftButtonRaw,left); 
     debouncer rightDebouncer(clk,rightButtonRaw,right); 
-    debouncer attackDebouncer(clk,attackButtonRaw,attack); 
+    debouncer attackDebouncer(clk,attackButtonRaw,attackHOLDABLE); 
     debouncer blockDebouncer(clk,blockButtonRaw,block); 
-    
+
+    always @ (posedge (clk)) begin
+        if(attackHOLDABLE) begin
+            attackCount = ((attackCount>20000000) && (attackCount!=0))? 0: attackCount+1;
+     end
+    else begin
+            attackCount = 1;
+            end
+     end
+
+    assign attack = ((attackCount != 0)&& attackHOLDABLE);  
     //movement
     wire canMoveHori;
     wire canMoveVerti;

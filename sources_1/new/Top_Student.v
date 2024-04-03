@@ -179,7 +179,7 @@ module Top_Student (
 
     
     // Reset Cond: sw[0] or btnC + winnner defined must be held for 2s or more before reset_cond goes high
-    reg reset_cond = 0;
+    reg reset_cond = 1;
     reg [5:0] timer = 0;
     always@(posedge CLK_20Hz)
     begin
@@ -217,7 +217,7 @@ module Top_Student (
     //------------------------------------------------
     
     //Background Music Controller -------------------
-    musicController(.enableAudio(sw[2]), .clk(clk), .attackButtonRaw_1(btnC), .attackButtonRaw_2(player2AttackBtn), .player1Health(health_1), .player2Health(health_2), .state(winner), .audioOut(speaker));
+    musicController(.enableAudio(sw[2]), .clk(clk), .attackButtonRaw_1(player1ComboMove), .attackButtonRaw_2(player2ComboMove), .jumpButtonRaw_1(player1Jumping), .jumpButtonRaw_2(player2Jumping), .player1Health(health_1), .player2Health(health_2), .state(winner), .audioOut(speaker));
     //------------------------------------------------
 
     //OLED Driver -----------------------------------

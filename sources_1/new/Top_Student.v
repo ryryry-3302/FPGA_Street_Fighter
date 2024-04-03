@@ -15,11 +15,9 @@ module Top_Student (
     input clk,
     input [15:0]sw,
     input btnC, btnL, btnR, btnU, btnD,
-    input [4:1] JA, //slaveMasterController master input signals
-    input JA_attack,//slaveMasterController master input signals
-    output [4:1] JXADC, //slaveMasterController slave output signals
-    output JXADC_attack,//slaveMasterController slave output signals
-    output [7:0] JC,
+    input [7:0] JA, //slaveMasterController master input signals
+    output [7:0] JXADC, //slaveMasterController slave output signals
+    output reg [7:0] JC,
     output [15:0] led,
     output [6:0] seg,
     output [3:0] an,
@@ -27,11 +25,7 @@ module Top_Student (
     output speaker //audioOut pmod, connect to JB
 );
 
-    //Hp management----------------------------------
-    wire [8:0] health_1;
-    wire [8:0] health_2;
-    wire [2:0] winner; //Used in health management
-    
+
     wire CLK_20Hz; //the master TPS clock
     
     wire player1BOT; wire player2BOT;
@@ -61,30 +55,48 @@ module Top_Student (
     assign led[9:8] = player1ComboMove[1:0]; //lights up for checking of combo moves
     
     //player 2 controls EDITS HERE TO CONNECT TO BOT/2ND PLAYER
+    wire master_cs, master_sdin, master_sclk, master_d_cn, master_resn, master_vccen, master_pmoden;
+    wire slave_CLK_6MHz25, slave_cs, slave_sdin, slave_sclk, slave_d_cn, slave_resn, slave_vccen, slave_pmoden;    
+    
+    reg oled_clock;
+    
     wire player2UpBtn;
     wire player2DownBtn;
     wire player2LeftBtn;
     wire player2RightBtn;
     wire player2AttackBtn;
     
-    slaveMasterSetter myOppressor (.isMaster(sw[1]), .clk(clk), 
-        .btnU(btnU), .btnD(btnD), .btnL(btnL), .btnR(btnR), .btnC(btnC)
+    //Slave Master Data Flow Handler
+//    slaveMasterSetter myOppressor (.isMaster(sw[1]), .clk(clk), 
+//        .btnU(btnU), .btnD(btnD), .btnL(btnL), .btnR(btnR), .btnC(btnC)
         
-        //Master inputs:
-        ,.input_player2UpBtn(JA[1]), .input_player2DownBtn(JA[2]), .input_player2LeftBtn(JA[3]), .input_player2RightBtn(JA[4]),
-        .input_player2AttackBtn(JA_attack),
-        .player2UpBtn(player2UpBtn), .player2DownBtn(player2DownBtn), .player2LeftBtn(player2LeftBtn), .player2RightBtn(player2RightBtn), 
-        .player2AttackBtn(player2AttackBtn)
+//        //Master inputs:
+//        ,.input_player2UpBtn(JA[1]), .input_player2DownBtn(JA[2]), .input_player2LeftBtn(JA[3]), .input_player2RightBtn(JA[4]),
+//        .input_player2AttackBtn(JA_attack),
+//        .player2UpBtn(player2UpBtn), .player2DownBtn(player2DownBtn), .player2LeftBtn(player2LeftBtn), .player2RightBtn(player2RightBtn), 
+//        .player2AttackBtn(player2AttackBtn)
         
-        //Slave outputs:
-        ,.slaveOut_player2UpBtn(JXADC[1]), .slaveOut_player2DownBtn(JXADC[2]), .slaveOut_player2LeftBtn(JXADC[3]), .slaveOut_player2RightBtn(JXADC[4]),
-        .slaveOut_player2AttackBtn(JXADC_attack)
-        );
+//        //Slave outputs:
+//        ,.slaveOut_player2UpBtn(JXADC[1]), .slaveOut_player2DownBtn(JXADC[2]), .slaveOut_player2LeftBtn(JXADC[3]), .slaveOut_player2RightBtn(JXADC[4]),
+//        .slaveOut_player2AttackBtn(JXADC_attack)
+//        );
         
-        assign led[10] = player2UpBtn;
-        assign led[11] = player2LeftBtn;
-        assign led[12] = player2RightBtn;
-        assign led[13] = player2AttackBtn;
+    slaveMasterSetter(.isMaster(sw[1]), .clk(clk),.JA(JA), .JXADC(JXADC)
+        
+            //Master inputs and outputs:
+            ,.cs(master_cs), .sdin(master_cs), .sclk(master_sclk), .d_cn(master_d_cn), .resn(master_resn), .vccen(master_vccen), .pmoden(master_pmoden)
+            ,.player2UpBtn(player2UpBtn), .player2DownBtn(player2DownBtn), .player2LeftBtn(player2LeftBtn), .player2RightBtn(player2RightBtn), 
+            .player2AttackBtn(player2AttackBtn)
+            
+            //Slave inputs and outputs:
+            ,.btnU(btnU), .btnD(btnD), .btnL(btnL), .btnR(btnR), .btnC(btnC)
+            , .slave_CLK_6MHz25(slave_CLK_6MHz25), .slave_cs(slave_cs), .slave_sdin(slave_sdin), .slave_sclk(slave_sclk), .slave_d_cn(slave_d_cn), .slave_resn(slave_resn), .slave_vccen(slave_vccen), .slave_pmoden(slave_pmoden)
+            );
+    
+    assign led[10] = player2UpBtn;
+    assign led[11] = player2LeftBtn;
+    assign led[12] = player2RightBtn;
+    assign led[13] = player2AttackBtn;
 
     //player 2 inputs
     wire player2CharChoice; //3 bit value, can ignore for now if we dont have more char choices
@@ -104,7 +116,6 @@ module Top_Student (
     
     playerMovementHandler player1MovementHandler(
         //for AI
-        .health(health_1),
         .random5bit(random5bitValue1),
         .BYPASS(player1BOT),
         //raw inputs
@@ -128,13 +139,12 @@ module Top_Student (
         .playerChar(player1CharChoice),
         .isCrouched(player1IsCrouched),
         .isInAir(player1IsInAir),
-        .isStunned(0),
+        .isStunned(player1IsStunned),
         .isPerformingAttackAnimation(player1IsPerformingAttackAnimation)
         );
        
     playerMovementHandler player2MovementHandler(
         //for AI
-        .health(health_2),
         .random5bit(random5bitValue2),
         .BYPASS(player2BOT),
         //raw inputs
@@ -158,7 +168,7 @@ module Top_Student (
         .playerChar(player2CharChoice),
         .isCrouched(player2IsCrouched),
         .isInAir(player2IsInAir),
-        .isStunned(0),
+        .isStunned(player2IsStunned),
         .isPerformingAttackAnimation(player2IsPerformingAttackAnimation)
         );
 
@@ -176,7 +186,7 @@ module Top_Student (
     wire player1isColliding;
     wire player2isColliding;
     
-
+    wire [2:0] winner; //Used in health management
     
     // Reset Cond: sw[0] or btnC + winnner defined must be held for 2s or more before reset_cond goes high
     reg reset_cond = 0;
@@ -204,8 +214,9 @@ module Top_Student (
     assign led[14] = player_1_hitrangewire;
     assign led[15] = player1isColliding;
     
-
-
+    //Hp management----------------------------------
+    wire [8:0] health_1;
+    wire [8:0] health_2;
     
 
     HealthManagement HealthManagement(.clk(CLK_20Hz),.reset(reset_cond),
@@ -217,7 +228,7 @@ module Top_Student (
     //------------------------------------------------
     
     //Background Music Controller -------------------
-    musicController(.enableAudio(sw[2]), .clk(clk), .attackButtonRaw_1(btnC), .attackButtonRaw_2(player2AttackBtn), .player1Health(health_1), .player2Health(health_2), .state(winner), .audioOut(speaker));
+    musicController(.enableAudio(sw[2]), .clk(clk), .attackButtonRaw_1(player1ComboMove), .attackButtonRaw_2(player2ComboMove), .jumpButtonRaw_1(player1Jumping), .jumpButtonRaw_2(player2Jumping), .player1Health(health_1), .player2Health(health_2), .state(winner), .audioOut(speaker));
     //------------------------------------------------
 
     //OLED Driver -----------------------------------
@@ -301,7 +312,7 @@ module Top_Student (
                 .pixel_index(pixel_index), .random_5bit_val(random5bitValue1),
                 .bullet_x(bullet_x1), .bullet_y(bullet_y1),
                 .bullet_en(bullet_en1),
-                .oled_colour(bullet_col_1),.hit_player(bullethit2));
+                .oled_colour(bullet_col_1),.playerhit(bullethit2));
     wire bullethit1;
     wire [15:0] bullet_col_2;
     wire [6:0] bullet_x2; wire [6:0] bullet_y2;
@@ -313,7 +324,7 @@ module Top_Student (
                 .pixel_index(pixel_index), .random_5bit_val(random5bitValue2),
                 .bullet_x(bullet_x2), .bullet_y(bullet_y2),
                 .bullet_en(bullet_en2),
-                .oled_colour(bullet_col_2),.hit_player(bullethit1));                
+                .oled_colour(bullet_col_2),.playerhit(bullethit1));                
 
 
     // Oled colour mux -------------------------------------------
@@ -348,12 +359,23 @@ module Top_Student (
         .sample_pixel(sample_pixel),
         .pixel_index(pixel_index),
         .pixel_data(oled_colour),
-        .cs(JC[0]),
-        .sdin(JC[1]),
-        .sclk(JC[3]),
-        .d_cn(JC[4]),
-        .resn(JC[5]),
-        .vccen(JC[6]),
-        .pmoden(JC[7]));
+        .cs(master_cs),
+        .sdin(master_sdin),
+        .sclk(master_sclk),
+        .d_cn(master_d_cn),
+        .resn(master_resn),
+        .vccen(master_vccen),
+        .pmoden(master_pmoden));
+        
+        always @ (posedge clk) begin
+//            oled_clock <= sw[1] ? CLK_6MHz25 : slave_CLK_6MHz25;
+            JC[0] <= sw[1] ? master_cs : slave_cs;
+            JC[1] <= sw[1] ? master_sdin : slave_sdin;
+            JC[3] <= sw[1] ? master_sclk : slave_sclk;
+            JC[4] <= sw[1] ? master_d_cn : slave_d_cn;
+            JC[5] <= sw[1] ? master_resn : slave_resn;
+            JC[6] <= sw[1] ? master_vccen : slave_vccen;
+            JC[7] <= sw[1] ? master_pmoden : slave_pmoden;
+        end
 
 endmodule

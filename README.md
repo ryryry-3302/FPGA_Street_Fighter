@@ -1,8 +1,10 @@
 # EE2026 Final Project
 
+Quick start guide can be found in the main file directory
+
 Development of a FPGA Street Fighter Game
 
-**Remember to pull from main before pushing to prevent any merge conflicts.**
+
 - [Expected Behavior](#expected-behaviour)
     - [Controls](#controls)
     - [Switch Mappings](#switch-mappings)

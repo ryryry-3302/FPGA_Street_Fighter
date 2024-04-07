@@ -3,13 +3,13 @@ module hsv_to_rgb(
     output [15:0] rgb 
 );
     
-    parameter s = 255; //set as brightest values
+    parameter s = 255; //set as brightest values for s and v
     parameter v = 255;
+    parameter P = (v * (255 - s)) >> 8;
     
     reg [7:0] region;
     reg [7:0] remainder;
 
-    reg [7:0] P;
     reg [7:0] Q;
     reg [7:0] T;
 
@@ -22,7 +22,6 @@ module hsv_to_rgb(
         region = h/43;
         remainder = (h - (region * 43)) * 6;
 
-        P = (v * (255 - s)) >> 8;
         Q = (v * (255 - ((s * remainder) >> 8))) >> 8;
         T = (v * (255 - ((s * (255 - remainder)) >> 8))) >> 8;
 

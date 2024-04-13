@@ -1,4 +1,7 @@
 # EE2026 Final Project
+Demos
+https://youtu.be/3xtzSfwD2zg
+
 
 Quick start guide can be found in the main file directory
 

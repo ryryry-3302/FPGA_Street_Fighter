@@ -1,6 +1,9 @@
 # EE2026 Final Project
-Demos
+
 ![](https://github.com/ryryry-3302/ee2026_final_project/blob/main/ee2026demogif.gif)
+
+Demos
+
 https://youtu.be/3xtzSfwD2zg
 
 

@@ -2,13 +2,13 @@
 
 ![](https://github.com/ryryry-3302/ee2026_final_project/blob/main/ee2026demogif.gif)
 
-Demos
-
+## Demos
 https://youtu.be/3xtzSfwD2zg
 
+## Quick start
+Guide can be found in the main file directory
 
-Quick start guide can be found in the main file directory
-
+## Project description 
 Development of a FPGA Street Fighter Game
 
 
